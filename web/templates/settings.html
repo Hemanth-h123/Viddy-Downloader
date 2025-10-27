@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Viddy Downloader{% endblock %}
+
+{% block body_class %}settings-page{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h3 mb-0">Settings</h1>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('settings') }}">
+                        {{ form.csrf_token }}
+                        
+                        <!-- General Settings Section -->
+                        <div class="mb-4">
+                            <h2 class="h5 mb-3">General Settings</h2>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.username.id }}" class="form-label">User Name</label>
+                                {{ form.username(class="form-control", placeholder="Enter your display name") }}
+                                {% if form.username.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.username.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.email.id }}" class="form-label">Email</label>
+                                {{ form.email(class="form-control", readonly=true) }}
+                                <div class="form-text">Email is managed by your authentication method.</div>
+                            </div>
+                            <!--<div class="mb-3">
+                                <label for="save_path" class="form-label">Default Save Path</label>
+                                {{ form.save_path(class="form-control", placeholder="/path/to/downloads") }}
+                                <div class="form-text">Where your downloads will be saved by default</div>
+                            </div>-->
+                            
+                            <div class="mb-3">
+                                <label for="concurrent_downloads" class="form-label">Concurrent Downloads</label>
+                                {{ form.concurrent_downloads(class="form-control") }}
+                                <div class="form-text">Maximum number of downloads to process simultaneously</div>
+                            </div>
+                            
+                        </div>
+                        
+                        <!-- Updates & Analytics Section -->
+                        <div class="mb-4">
+                            <h2 class="h5 mb-3">Updates & Analytics</h2>
+                            
+                            <div class="form-check form-switch mb-3">
+                                {{ form.check_updates(class="form-check-input") }}
+                                <label class="form-check-label" for="check_updates">Check for updates automatically</label>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                {{ form.allow_analytics(class="form-check-input") }}
+                                <label class="form-check-label" for="allow_analytics">Allow anonymous usage analytics</label>
+                                <div class="form-text">Helps us improve the application by sending anonymous usage data</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Subscription Section -->
+                        <div class="mb-4">
+                            <h2 class="h5 mb-3">Subscription</h2>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="mb-1">
+                                        Current Plan:
+                                        <span class="badge bg-info">{{ current_plan_name }}</span>
+                                    </div>
+                                    <div class="text-muted">
+                                        {% set limit = current_plan['limits']['daily_downloads'] %}
+                                        Daily downloads: {{ limit }}{% if limit != 'Unlimited' %}/day{% endif %}
+                                        {% if current_plan['limits']['ad_free'] %}
+                                            · Ad-free
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <a href="{{ url_for('premium') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-exchange-alt me-1"></i> Change Plan
+                                </a>
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Save Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Danger Zone -->
+            <div class="card mt-4 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="h5 mb-0">Danger Zone</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="h6 mb-1">Clear Download History</h3>
+                            <p class="text-muted mb-0">Remove all your download records</p>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#clearHistoryModal">
+                            Clear History
+                        </button>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="h6 mb-1">Delete Account</h3>
+                            <p class="text-muted mb-0">Permanently delete your account and all data</p>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Clear History Modal -->
+<div class="modal fade" id="clearHistoryModal" tabindex="-1" aria-labelledby="clearHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clearHistoryModalLabel">Clear Download History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to clear your entire download history? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('clear_history') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger">Clear History</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Warning: This action is permanent!
+                </div>
+                <p>Deleting your account will:</p>
+                <ul>
+                    <li>Remove all your personal information</li>
+                    <li>Delete your download history</li>
+                    <li>Cancel any active subscriptions</li>
+                    <li>Permanently delete your account</li>
+                </ul>
+                <p>Are you absolutely sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('delete_account') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger">Delete My Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

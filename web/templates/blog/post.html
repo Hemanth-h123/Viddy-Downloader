@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Viddy Downloader{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('blog.blog_index') }}">Blog</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+        </ol>
+    </nav>
+    
+    <article>
+        <h1 class="mb-3">{{ post.title }}</h1>
+        <p class="text-muted">
+            <small>Published on {{ post.created_at.strftime('%B %d, %Y') }} by {{ post.author.username }} | {{ post.views }} views</small>
+        </p>
+
+        {% include 'partials/ads_inarticle.html' %}
+        
+        {% if post.featured_image %}
+        <img src="{{ post.featured_image }}" class="img-fluid mb-4" alt="{{ post.title }}">
+        {% endif %}
+        
+        <div class="blog-content">
+            {{ post.content|safe }}
+        </div>
+    </article>
+</div>
+{% endblock %}

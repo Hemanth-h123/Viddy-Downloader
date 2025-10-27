@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Blog Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0"><i class="fas fa-blog me-2"></i>Blog Posts</h2>
+  <a href="{{ url_for('admin.blog_new') }}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> New Post
+  </a>
+  
+</div>
+
+{% if posts and posts|length > 0 %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Slug</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Updated</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for post in posts %}
+        <tr>
+          <td class="fw-semibold">{{ post.title }}</td>
+          <td><code>{{ post.slug }}</code></td>
+          <td>
+            {% if post.published %}
+              <span class="badge bg-success">Published</span>
+            {% else %}
+              <span class="badge bg-secondary">Draft</span>
+            {% endif %}
+          </td>
+          <td>{{ post.created_at.strftime('%Y-%m-%d %H:%M') if post.created_at else '-' }}</td>
+          <td>{{ post.updated_at.strftime('%Y-%m-%d %H:%M') if post.updated_at else '-' }}</td>
+          <td class="text-end">
+            <a href="{{ url_for('admin.blog_edit', post_id=post.id) }}" class="btn btn-sm btn-outline-primary me-2">
+              <i class="fas fa-edit"></i> Edit
+            </a>
+            <form action="{{ url_for('admin.blog_delete', post_id=post.id) }}" method="post" class="d-inline" onsubmit="return confirm('Delete this post? This action cannot be undone.');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit" class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    No blog posts yet. Click "New Post" to create your first article.
+  </div>
+{% endif %}
+
+<div class="mt-3">
+  <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-light">
+    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+  </a>
+</div>
+{% endblock %}

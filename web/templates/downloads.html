@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}My Downloads - Viddy Downloader{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Poll and update all progress bars every second
+        const intervalId = setInterval(function() {
+            const downloadingItems = document.querySelectorAll('[id^="progress-"]');
+            if (downloadingItems.length === 0) {
+                clearInterval(intervalId);
+                return;
+            }
+            downloadingItems.forEach(function(progressBar) {
+                const downloadId = progressBar.id.split('-')[1];
+                fetch(`/api/downloads/${downloadId}/status`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'downloading') {
+                            const pct = parseInt(data.progress || 0, 10);
+                            progressBar.style.width = pct + '%';
+                            progressBar.setAttribute('aria-valuenow', pct);
+                            progressBar.textContent = pct + '%';
+                        } else if (data.status === 'completed') {
+                            progressBar.style.width = '100%';
+                            progressBar.setAttribute('aria-valuenow', 100);
+                            progressBar.textContent = '100%';
+                            // Optional: reload to update actions
+                            window.location.reload();
+                        }
+                    })
+                    .catch(error => console.error('Error fetching progress:', error));
+            });
+        }, 1000);
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="fas fa-list me-2"></i> My Downloads
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info d-flex justify-content-between align-items-center" role="alert">
+                    <div>
+                        <strong>Daily limits</strong>:
+                        {% if daily_limit_videos is string and daily_limit_videos|lower == 'unlimited' %}
+                            Unlimited videos per day{% if plan_id == 'free' %}, data cap <code>3GB</code>{% endif %}.
+                        {% else %}
+                            <code>{{ daily_limit_videos }}</code> videos per day{% if plan_id == 'free' %}, data cap <code>3GB</code>{% endif %}.
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if videos_remaining is not none %}
+                            Remaining today: <strong>{{ videos_remaining }}</strong> of {{ daily_limit_videos }} videos
+                        {% else %}
+                            Remaining today: <strong>Unlimited</strong> videos
+                        {% endif %}
+                        {% if plan_id == 'free' %}
+                            , data left: <strong>{{ (data_remaining_bytes or 0) // (1024*1024) }}</strong> MB of {{ (free_data_cap // (1024*1024*1024)) }} GB
+                        {% endif %}
+                    </div>
+                </div>
+                {% if downloads %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Platform</th>
+                                    <th>URL</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for download in downloads %}
+                                <tr>
+                                    <td>
+                                        {% if download.platform == 'youtube' %}
+                                            <i class="fab fa-youtube text-danger"></i> YouTube
+                                        {% elif download.platform == 'facebook' %}
+                                            <i class="fab fa-facebook text-primary"></i> Facebook
+                                        {% elif download.platform == 'instagram' %}
+                                            <i class="fab fa-instagram text-danger"></i> Instagram
+                                        {% elif download.platform == 'twitter' %}
+                                            <i class="fab fa-twitter text-info"></i> Twitter
+                                        {% elif download.platform == 'tiktok' %}
+                                            <i class="fab fa-tiktok"></i> TikTok
+                                        {% elif download.platform == 'vimeo' %}
+                                            <i class="fab fa-vimeo-v text-primary"></i> Vimeo
+                                        {% elif download.platform == 'pinterest' %}
+                                            <i class="fab fa-pinterest text-danger"></i> Pinterest
+                                        {% elif download.platform == 'linkedin' %}
+                                            <i class="fab fa-linkedin text-primary"></i> LinkedIn
+                                        {% else %}
+                                            <i class="fas fa-globe"></i> {{ download.platform|title }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ download.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ download.url }}">
+                                            {{ download.url }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {% if download.status == 'downloading' %}
+                                            <span class="badge bg-warning text-dark">Downloading</span>
+                                            <div class="progress mt-2">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                     role="progressbar" 
+                                                     style="width: {{ download.progress|default(0) }}%;"
+                                                     aria-valuenow="{{ download.progress|default(0) }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100"
+                                                     id="progress-{{ download.id }}">
+                                                    {{ download.progress|default(0) }}%
+                                                </div>
+                                            </div>
+                                        {% elif download.status == 'completed' %}
+                                            <span class="badge bg-success">Completed</span>
+                                        {% elif download.status == 'failed' %}
+                                            <span class="badge bg-danger">Failed</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ download.status|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ download.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        {% if download.status == 'completed' and download.file_path %}
+                                            {% set file_ext = download.file_path.split('.')[-1].lower() %}
+                                            {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'] %}
+                                                <a href="{{ url_for('download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Image">
+                                                    <i class="fas fa-image"></i>
+                                                </a>
+                                            {% elif file_ext in ['mp3', 'wav', 'm4a', 'flac', 'ogg'] %}
+                                                <a href="{{ url_for('download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Audio">
+                                                    <i class="fas fa-music"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="{{ url_for('download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Video">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                        <form method="POST" action="{{ url_for('delete_download', download_id=download.id) }}" style="display:inline;">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        {% if download.status == 'downloading' %}
+                                            <button type="button" class="btn btn-sm btn-info" disabled>
+                                                <i class="fas fa-spinner fa-spin"></i> Downloading
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-download fa-4x text-muted mb-3"></i>
+                        <h3>No downloads yet</h3>
+                        <p class="lead">Start downloading videos by going to the <a href="{{ url_for('index') }}">home page</a>.</p>
+                    </div>
+                {% endif %}
+            </div>
+            {% if downloads %}
+            <div class="card-footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Showing {{ downloads|length }} of {{ total }} download(s)</span>
+                    <div class="btn-group" role="group">
+                        {% if has_prev %}
+                        <a href="{{ url_for('downloads', page=page-1) }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-chevron-left"></i> Prev
+                        </a>
+                        {% endif %}
+                        <span class="btn btn-sm btn-outline-secondary disabled">Page {{ page }}</span>
+                        {% if has_next %}
+                        <a href="{{ url_for('downloads', page=page+1) }}" class="btn btn-sm btn-outline-secondary">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Auto-refresh the page every 30 seconds if there are downloads in progress
+        {% if downloads %}
+            {% set has_in_progress = downloads|selectattr('status', 'equalto', 'downloading')|list|length > 0 %}
+            {% if has_in_progress %}
+                setTimeout(function() {
+                    window.location.reload();
+                }, 30000);
+            {% endif %}
+        {% endif %}
+    });
+</script>
+{% endblock %}

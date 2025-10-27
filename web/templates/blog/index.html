@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Viddy Downloader{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Blog</h1>
+    <p class="lead">Latest news, tutorials, and updates about Viddy Downloader</p>
+    
+    {% if posts is none %}
+    <div class="alert alert-info">
+        <p>No blog posts available at the moment. Check back soon for new content!</p>
+    </div>
+    {% else %}
+    <div class="row">
+        {% for post in posts.items %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                {% if post.featured_image %}
+                <img src="{{ post.featured_image }}" class="card-img-top" alt="{{ post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text text-muted">
+                        <small>{{ post.created_at.strftime('%B %d, %Y') }} | {{ post.views }} views</small>
+                    </p>
+                    {% if post.summary %}
+                    <p class="card-text">{{ post.summary }}</p>
+                    {% else %}
+                    <p class="card-text">{{ post.content|truncate(150) }}</p>
+                    {% endif %}
+                    <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if posts.pages > 1 %}
+    <nav aria-label="Blog pagination">
+        <ul class="pagination justify-content-center">
+            {% if posts.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('blog.blog_index', page=posts.prev_num) }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+            {% endif %}
+            
+            {% for page_num in posts.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num == posts.page %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('blog.blog_index', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if posts.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('blog.blog_index', page=posts.next_num) }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

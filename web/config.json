@@ -1,0 +1,26 @@
+{
+    "save_path": "C:\\Users\\heman\\Downloads",
+    "max_concurrent_downloads": 3,
+    "theme": "system",
+    "auto_update": true,
+    "analytics": true,
+    "ad_frequency": "normal",
+    "auth": {
+        "cookies_file": "",
+        "cookies_from_browser": "",
+        "username": "",
+        "password": ""
+    },
+    "monetization": {
+        "subscription_status": "free",
+        "subscription_expiry": null,
+        "paypal": {
+            "mode": "sandbox",
+            "client_id": "",
+            "client_secret": ""
+        },
+        "stripe": {
+            "api_key": ""
+        }
+    }
+}

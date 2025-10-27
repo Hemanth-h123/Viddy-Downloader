@@ -1,0 +1,38 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+
+# Environments
+venv/
+env/
+.env
+.env.*
+
+# Flask/SQLite local data
+instance/
+*.db
+*.sqlite3
+
+# App-generated files
+downloads/
+web/downloads/
+logs/
+web/logs/
+
+# Trae/automation
+.qodo/
+
+# Build artifacts
+dist/
+build/

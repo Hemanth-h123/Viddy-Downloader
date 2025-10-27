@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}Viddy Downloader - Download Videos from Any Platform{% endblock %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card home-hero-card shadow-lg">
+            <div class="card-body">
+                <h1 class="text-center mb-3 hero-title">
+                    Viddy Downloader
+                </h1>
+                <p class="text-center hero-subtitle mb-4">
+                    Paste a video link below to get download options for MP4 and MP3.
+                </p>
+                
+                {% if current_user.is_authenticated %}
+                    <form method="POST" action="{{ url_for('download') }}" class="mb-4">
+                        {{ form.hidden_tag() }}
+                        <div class="input-bar mb-3">
+                            {{ form.url(class="form-control", placeholder="https://www.youtube.com/watch?v=...") }}
+                            <button type="submit" class="btn btn-gradient">
+                                <i class="fas fa-play me-2"></i> Get Video
+                            </button>
+                        </div>
+                        {% if form.url.errors %}
+                            <div class="text-danger">
+                                {% for error in form.url.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.quality.id }}" class="form-label">Quality:</label>
+                                    {{ form.quality(class="form-select") }}
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div id="platform-info" class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Paste a URL to detect the platform
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Daily Download Limit Display (Videos) -->
+                    <div class="alert alert-info mt-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-video me-2"></i>
+                                <span>Daily Video Downloads: <strong>{{ downloads_today }} / {{ daily_limit }}</strong></span>
+                            </div>
+                            <div class="progress" style="width: 60%; height: 10px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: {% if daily_limit != 'Unlimited' %}{{ (downloads_today / daily_limit * 100)|int }}{% else %}0{% endif %}%;" 
+                                     aria-valuenow="{{ downloads_today }}" aria-valuemin="0" aria-valuemax="{{ daily_limit }}">
+                                </div>
+                            </div>
+                        </div>
+                        <small class="text-muted mt-2 d-block"><i class="fas fa-film me-1"></i> Video Quality: {% if plan == 'free' %}Up to 720p{% else %}Best Available{% endif %}</small>
+                        <small class="text-muted mt-1 d-block">Maximum file size: {{ max_file_size_mb }}MB</small>
+                    </div>
+
+                    <!-- Daily Image Download Limit Display (Free users) -->
+                    <div class="alert alert-warning mt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-image me-2"></i>
+                                <span>Daily Image Downloads: <strong>{{ images_today }} / 10</strong></span>
+                                <span class="ms-2 text-muted">Remaining: <strong>{{ (10 - images_today) if images_today <= 10 else 0 }}</strong></span>
+                            </div>
+                            <div class="progress" style="width: 60%; height: 10px;">
+                                <div class="progress-bar bg-warning" role="progressbar"
+                                     style="width: {{ (images_today / 10 * 100)|int }}%;"
+                                     aria-valuenow="{{ images_today }}" aria-valuemin="0" aria-valuemax="10">
+                                </div>
+                            </div>
+                        </div>
+                        <small class="text-muted mt-1 d-block">Free users can download up to 10 images per day.</small>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <a href="{{ url_for('login') }}" class="alert-link">Log in</a> or 
+                        <a href="{{ url_for('register') }}" class="alert-link">register</a> to download videos.
+                    </div>
+                    
+                    <div class="input-bar mb-3">
+                        <input type="text" class="form-control" placeholder="https://www.youtube.com/watch?v=..." disabled>
+                        <button type="button" class="btn btn-gradient" disabled>
+                            <i class="fas fa-play me-2"></i> Get Video
+                        </button>
+                    </div>
+                {% endif %}
+                
+                <div class="card platforms-card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Supported Platforms</h5>
+                        <div class="row text-center">
+                            <div class="col-4 col-md-2 mb-3">
+                                <i class="fab fa-youtube fa-2x text-danger"></i>
+                                <p class="mt-2">YouTube</p>
+                            </div>
+                            <div class="col-4 col-md-2 mb-3">
+                                <i class="fab fa-facebook fa-2x text-primary"></i>
+                                <p class="mt-2">Facebook</p>
+                            </div>
+                            <div class="col-4 col-md-2 mb-3">
+                                <i class="fab fa-instagram fa-2x text-danger"></i>
+                                <p class="mt-2">Instagram</p>
+                            </div>
+                            <div class="col-4 col-md-2 mb-3">
+                                <i class="fab fa-twitter fa-2x text-info"></i>
+                                <p class="mt-2">Twitter</p>
+                            </div>
+                            <div class="col-4 col-md-2 mb-3">
+                                <i class="fab fa-tiktok fa-2x text-dark"></i>
+                                <p class="mt-2">TikTok</p>
+                            </div>
+                            <div class="col-4 col-md-2 mb-3">
+                                <i class="fab fa-vimeo-v fa-2x text-info"></i>
+                                <p class="mt-2">Vimeo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How to Download Instructions -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-question-circle me-2"></i>How to Download</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-video me-1"></i> Videos</h6>
+                                <ul class="mb-3">
+                                    <li>Copy the video URL from YouTube, Facebook, TikTok, etc.</li>
+                                    <li>Paste the URL into the input box above.</li>
+                                    <li>Choose the desired quality (free users up to 720p).</li>
+                                    <li>Click <strong>Get Video</strong> to start the download.</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-image me-1"></i> Images</h6>
+                                <ul>
+                                    <li>Copy the image or post URL (e.g., Instagram post, Pinterest pin).</li>
+                                    <li>Paste the URL into the input box above.</li>
+                                    <li>Click <strong>Get Video</strong> to fetch and download the image.</li>
+                                    <li>Free users can download up to <strong>10 images/day</strong>.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <span class="feature-icon"><i class="fas fa-share-nodes"></i></span>
+                            <div class="feature-title">Social Media Downloader</div>
+                            <div class="feature-text">Works with YouTube, Facebook, Instagram, Twitter, TikTok, and more.</div>
+                        </div>
+                        <div class="feature-card">
+                            <span class="feature-icon"><i class="fas fa-mouse-pointer"></i></span>
+                            <div class="feature-title">One Click Download</div>
+                            <div class="feature-text">Paste the link and hit Download — it’s that simple.</div>
+                        </div>
+                        <div class="feature-card">
+                            <span class="feature-icon"><i class="fas fa-video"></i></span>
+                            <div class="feature-title">HD Video Downloader</div>
+                            <div class="feature-text">Choose quality including HD, SD, and audio-only formats.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if not current_user.is_authenticated or not current_user.is_premium() %}
+        <div class="card premium-highlight shadow-lg mt-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h3 class="mb-3"><i class="fas fa-crown text-warning me-2"></i> Upgrade to Premium</h3>
+                        <p class="lead">Get more features and higher limits. Ad-free with Premium Plus.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i> Unlimited downloads</li>
+                            <li><i class="fas fa-check text-success me-2"></i> Ad-free with Premium Plus</li>
+                            <li><i class="fas fa-check text-success me-2"></i> HD quality downloads</li>
+                            <li><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                        </ul>
+                        <a href="{{ url_for('premium') }}" class="btn btn-warning">
+                            <i class="fas fa-crown me-2"></i> Upgrade Now
+                        </a>
+                    </div>
+                    <div class="col-md-4 text-center d-flex align-items-center justify-content-center">
+                        <div>
+                            <i class="fas fa-crown fa-5x text-warning mb-3"></i>
+                            <h4>Starting at $4.99/month</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlInput = document.getElementById('{{ form.url.id }}');
+        const platformInfo = document.getElementById('platform-info');
+        
+        if (urlInput && platformInfo) {
+            urlInput.addEventListener('input', function() {
+                const url = this.value.trim();
+                if (url) {
+                    // Simple platform detection based on URL
+                    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                        platformInfo.innerHTML = '<i class="fab fa-youtube text-danger me-1"></i> YouTube video detected';
+                    } else if (url.includes('facebook.com') || url.includes('fb.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-facebook text-primary me-1"></i> Facebook video detected';
+                    } else if (url.includes('instagram.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-instagram text-danger me-1"></i> Instagram video detected';
+                    } else if (url.includes('twitter.com') || url.includes('x.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-twitter text-info me-1"></i> Twitter video detected';
+                    } else if (url.includes('tiktok.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-tiktok text-dark me-1"></i> TikTok video detected';
+                    } else if (url.includes('vimeo.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-vimeo-v text-info me-1"></i> Vimeo video detected';
+                    } else if (url.includes('dailymotion.com') || url.includes('dai.ly')) {
+                        platformInfo.innerHTML = '<i class="fas fa-video text-primary me-1"></i> Dailymotion video detected';
+                    } else {
+                        platformInfo.innerHTML = '<i class="fas fa-question-circle text-muted me-1"></i> Unknown platform';
+                    }
+                } else {
+                    platformInfo.innerHTML = '<i class="fas fa-info-circle me-1"></i> Paste a URL to detect the platform';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

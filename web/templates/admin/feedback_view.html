@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}View Feedback{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Feedback Details</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ feedback.subject }}</h5>
+            <span class="badge {% if feedback.status == 'new' %}bg-primary{% elif feedback.status == 'in_progress' %}bg-warning{% else %}bg-success{% endif %}">
+                {{ feedback.status }}
+            </span>
+        </div>
+        <div class="card-body">
+            <p><strong>From:</strong> {% if feedback.user %}{{ feedback.user.username }}{% else %}Anonymous{% endif %}</p>
+            <p><strong>Email:</strong> {{ feedback.email or 'Not provided' }}</p>
+            <p><strong>Type:</strong> {{ feedback.feedback_type }}</p>
+            <p><strong>Date:</strong> {{ feedback.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <hr>
+            <div class="feedback-message">
+                {{ feedback.message }}
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('admin.update_feedback_status', feedback_id=feedback.id, status='in_progress') }}" class="btn btn-warning">Mark In Progress</a>
+            <a href="{{ url_for('admin.update_feedback_status', feedback_id=feedback.id, status='resolved') }}" class="btn btn-success">Mark Resolved</a>
+            <a href="{{ url_for('admin.manage_feedback') }}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

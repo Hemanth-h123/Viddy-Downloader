@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Feedback{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Feedback Management</h1>
+  <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+  </a>
+  
+</div>
+
+<div class="mb-3">
+  <ul class="nav nav-pills">
+    {% set filter = current_filter or 'all' %}
+    <li class="nav-item">
+      <a class="nav-link {{ 'active' if filter == 'all' }}" href="{{ url_for('admin.feedback_list', status='all') }}">All</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ 'active' if filter == 'new' }}" href="{{ url_for('admin.feedback_list', status='new') }}">New</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ 'active' if filter == 'in_progress' }}" href="{{ url_for('admin.feedback_list', status='in_progress') }}">In Progress</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ 'active' if filter == 'resolved' }}" href="{{ url_for('admin.feedback_list', status='resolved') }}">Resolved</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ 'active' if filter == 'closed' }}" href="{{ url_for('admin.feedback_list', status='closed') }}">Closed</a>
+    </li>
+  </ul>
+</div>
+
+{% if feedback and feedback|length > 0 %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Subject</th>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Resolved</th>
+          <th>Admin Notes</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in feedback %}
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.subject or '-' }}</td>
+            <td>{{ item.feedback_type or '-' }}</td>
+            <td>{{ item.name or '-' }}</td>
+            <td>{{ item.email or '-' }}</td>
+            <td>
+              {% set status = item.status or 'new' %}
+              {% if status == 'new' %}
+                <span class="badge bg-primary">New</span>
+              {% elif status == 'in_progress' %}
+                <span class="badge bg-warning text-dark">In Progress</span>
+              {% elif status == 'resolved' %}
+                <span class="badge bg-success">Resolved</span>
+              {% elif status == 'closed' %}
+                <span class="badge bg-secondary">Closed</span>
+              {% else %}
+                <span class="badge bg-info">{{ status }}</span>
+              {% endif %}
+            </td>
+            <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else '-' }}</td>
+            <td>{{ item.resolved_at.strftime('%Y-%m-%d %H:%M') if item.resolved_at else '-' }}</td>
+            <td>
+              {% if item.admin_notes %}
+                {{ item.admin_notes[:50] }}{% if item.admin_notes|length > 50 %}…{% endif %}
+              {% else %}-{% endif %}
+            </td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.feedback_detail', feedback_id=item.id) }}">
+                <i class="fas fa-eye me-1"></i> View
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    No feedback entries found{% if filter != 'all' %} for "{{ filter }}"{% endif %}.
+  </div>
+{% endif %}
+
+{% endblock %}

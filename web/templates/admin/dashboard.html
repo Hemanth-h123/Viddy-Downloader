@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Viddy Downloader{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Admin Dashboard</h1>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Blog Posts</h5>
+                    <p class="display-4">{{ total_posts }}</p>
+                    <p class="text-muted">{{ published_posts }} published</p>
+                    <a href="{{ url_for('admin.blog_list') }}" class="btn btn-primary">Manage Posts</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Feedback</h5>
+                    <p class="display-4">{{ feedback_stats.get('new', 0) }}</p>
+                    <p class="text-muted">New feedback items</p>
+                    <a href="{{ url_for('admin.feedback_list') }}" class="btn btn-primary">View Feedback</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Traffic</h5>
+                    <p class="display-4">{{ visits_by_page|length }}</p>
+                    <p class="text-muted">Pages with traffic</p>
+                    <a href="{{ url_for('admin.traffic_analytics') }}" class="btn btn-primary">View Analytics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Top Pages</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for page, count in visits_by_page %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ page }}
+                            <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Feedback Status</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            New
+                            <span class="badge bg-primary rounded-pill">{{ feedback_stats.get('new', 0) }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            In Progress
+                            <span class="badge bg-warning rounded-pill">{{ feedback_stats.get('in_progress', 0) }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Resolved
+                            <span class="badge bg-success rounded-pill">{{ feedback_stats.get('resolved', 0) }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Closed
+                            <span class="badge bg-secondary rounded-pill">{{ feedback_stats.get('closed', 0) }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

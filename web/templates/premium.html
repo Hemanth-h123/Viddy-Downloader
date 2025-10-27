@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Premium - Viddy Downloader{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Plans & Limits</h1>
+        <p class="lead">Ad-free is exclusive to <strong>Premium Plus</strong>. Compare all plans and limits.</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for plan_id, plan in plans.items() %}
+        <div class="col">
+            <div class="card h-100 {% if plan.popular %}border-primary border-2{% endif %}">
+                {% if plan.popular %}
+                <div class="card-header bg-primary text-white text-center">
+                    <span class="badge bg-warning text-dark">Most Popular</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <div class="text-center">
+                        <h3 class="card-title">{{ plan.name }}</h3>
+                        <h2 class="my-3">{{ plan.price }} <small class="text-muted">/{{ plan.period }}</small></h2>
+                    </div>
+                    <h6 class="text-muted">Features</h6>
+                    <ul class="list-unstyled mb-3">
+                        {% for feature in plan.features %}
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i> {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <h6 class="text-muted">Limits</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-1">
+                            <i class="fas fa-gauge text-secondary me-2"></i> Daily downloads: {{ plan.limits.daily_downloads }}
+                        </li>
+                        <li class="mb-1">
+                            <i class="fas fa-bullhorn text-secondary me-2"></i>
+                            Ads: {% if plan.limits.ad_free %}No ads{% else %}Ads shown{% endif %}
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent">
+                    {% if plan.price == 0 %}
+                    <form method="POST" action="{{ url_for('subscribe', plan_id=plan_id) }}" class="d-grid">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button type="submit" class="btn btn-outline-primary btn-lg w-100">Start Free</button>
+                    </form>
+                    {% else %}
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-secondary btn-lg w-100" disabled>
+                            <i class="fas fa-hourglass-half me-2"></i> Coming Soon
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <h3 class="mb-4">Frequently Asked Questions</h3>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            How does the free trial work?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            You can try our premium features free for 7 days. No credit card required. Cancel anytime before the trial ends to avoid being charged.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            Can I change plans later?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Yes, you can upgrade or downgrade your plan at any time. Your subscription will be prorated based on your current billing cycle.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            What payment methods do you accept?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            We accept all major credit cards including Visa, MasterCard, American Express, and Discover. We also support PayPal.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

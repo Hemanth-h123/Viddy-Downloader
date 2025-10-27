@@ -1,0 +1,254 @@
+/* ALL-in-one Downloader Web - Main Stylesheet */
+
+:root {
+    --primary-color: #29404a;
+    --primary-hover: #4aa8ff;
+    --secondary-color: #34a853;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --light-color: #f1f5f9;
+    --dark-color: #0d1b2a;
+    --bg-800: #0d1b2a;
+    --bg-900: #1b263b;
+    --bg-700: #e0e1dd;
+    --text-100: #ffffff;
+    --text-200: #000000;
+    --text-300: #94a3b8;
+    --border-700: #334155;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-800);
+    color: var(--text-200);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar styling */
+.navbar-brand.project-name {
+    font-family: 'Broadway', serif;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+.navbar {
+    background-color: var(--bg-900) !important;
+    border-bottom: 1px solid var(--border-700);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: var(--text-200) !important;
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-200) !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Card styling */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: none;
+    background-color: var(--bg-700);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    color: var(--text-100);
+}
+
+.card-header {
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+    color: var(--text-100);
+}
+
+/* Form styling */
+.form-control, .form-select {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: var(--text-100);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(30, 144, 255, 0.25);
+}
+
+.form-label {
+    color: var(--text-200);
+    margin-bottom: 0.5rem;
+}
+
+/* Button styling */
+.btn {
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-success {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: #1e293b;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer styling */
+.footer {
+    margin-top: auto;
+    padding: 2rem 0;
+    background-color: var(--bg-900);
+    border-top: 1px solid var(--border-700);
+    color: var(--text-200);
+}
+
+.footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Home page specific styling */
+.home-page .card {
+    border-radius: 15px;
+}
+
+/* Platform icons styling */
+.fab, .fas {
+    vertical-align: middle;
+}
+
+/* Progress bar styling */
+.progress {
+    height: 10px;
+    border-radius: 5px;
+}
+
+/* Table styling */
+.table {
+    color: var(--text-200);
+    background-color: var(--bg-700);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: var(--bg-900);
+    color: var(--text-200);
+    border-bottom: 2px solid var(--border-700);
+    font-weight: 500;
+}
+
+.table td {
+    border-color: var(--border-700);
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Premium page styling */
+.display-4 {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    body.theme-system {
+        background-color: var(--bg-800);
+        color: var(--text-200);
+    }
+    
+    body.theme-system .card {
+        background-color: var(--bg-900);
+        color: var(--text-200);
+    }
+    
+    body.theme-system .card-header {
+        background-color: rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid var(--border-700);
+    }
+    
+    body.theme-system .table {
+        color: var(--text-200);
+        background-color: var(--bg-900);
+    }
+    
+    body.theme-system .table th {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: var(--text-200);
+    }
+    
+    body.theme-system .form-control,
+    body.theme-system .form-select {
+        background-color: var(--bg-900);
+        border-color: var(--border-700);
+        color: var(--text-200);
+    }
+    
+    body.theme-system .bg-light {
+        background-color: var(--bg-900) !important;
+    }
+    
+    body.theme-system .text-muted {
+        color: var(--text-300) !important;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+}

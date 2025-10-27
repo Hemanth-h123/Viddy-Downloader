@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Feedback{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Manage Feedback</h1>
+    
+    <div class="mb-4">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in feedback %}
+                <tr>
+                    <td>{{ item.subject }}</td>
+                    <td>{{ item.feedback_type }}</td>
+                    <td>{{ item.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ item.status }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.view_feedback', feedback_id=item.id) }}" class="btn btn-sm btn-info">View</a>
+                        <a href="{{ url_for('admin.update_feedback_status', feedback_id=item.id, status='resolved') }}" class="btn btn-sm btn-success">Mark Resolved</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

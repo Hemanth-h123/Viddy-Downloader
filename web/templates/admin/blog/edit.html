@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% set is_edit = post is not none %}
+
+{% block title %}{{ 'Edit Blog Post' if is_edit else 'New Blog Post' }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">{{ 'Edit Blog Post' if is_edit else 'New Blog Post' }}</h1>
+  <a href="{{ url_for('admin.blog_list') }}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Back to Blog List
+  </a>
+</div>
+
+{% if is_edit %}
+  <div class="alert alert-light border mb-3">
+    <div class="d-flex justify-content-between">
+      <div>
+        <strong>Slug:</strong> {{ post.slug }}
+      </div>
+      <div>
+        <strong>Created:</strong> {{ post.created_at.strftime('%Y-%m-%d %H:%M') if post.created_at else '-' }}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<form method="post" action="{{ url_for('admin.blog_edit', post_id=post.id) if is_edit else url_for('admin.blog_new') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <div class="mb-3">
+    <label for="title" class="form-label">Title</label>
+    <input type="text" id="title" name="title" class="form-control" placeholder="Enter title" value="{{ post.title if is_edit else '' }}" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="summary" class="form-label">Summary</label>
+    <textarea id="summary" name="summary" class="form-control" rows="3" placeholder="Short summary shown in listings">{{ post.summary if is_edit else '' }}</textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="featured_image" class="form-label">Featured Image URL</label>
+    <input type="text" id="featured_image" name="featured_image" class="form-control" placeholder="https://example.com/image.jpg" value="{{ post.featured_image if is_edit else '' }}">
+  </div>
+
+  <div class="mb-3">
+    <label for="content" class="form-label">Content</label>
+    <textarea id="content" name="content" class="form-control" rows="12" placeholder="Write your post content here" required>{{ post.content if is_edit else '' }}</textarea>
+  </div>
+
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" id="published" name="published" {{ 'checked' if is_edit and post.published }}>
+    <label class="form-check-label" for="published">
+      Published
+    </label>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <a href="{{ url_for('admin.blog_list') }}" class="btn btn-outline-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">
+      <i class="fas fa-save me-1"></i> {{ 'Save Changes' if is_edit else 'Create Post' }}
+    </button>
+  </div>
+</form>
+
+{% endblock %}

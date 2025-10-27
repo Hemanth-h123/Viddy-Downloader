@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}About - Viddy Downloader{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h3 mb-0">About Viddy Downloader</h1>
+                </div>
+                <div class="card-body">
+                    <!-- Tabs navigation -->
+                    <ul class="nav nav-tabs" id="aboutTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+                                <i class="fas fa-info-circle me-1"></i> Overview
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="features-tab" data-bs-toggle="tab" data-bs-target="#features" type="button" role="tab" aria-controls="features" aria-selected="false">
+                                <i class="fas fa-star me-1"></i> Features
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="platforms-tab" data-bs-toggle="tab" data-bs-target="#platforms" type="button" role="tab" aria-controls="platforms" aria-selected="false">
+                                <i class="fas fa-globe me-1"></i> Supported Platforms
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="legal-tab" data-bs-toggle="tab" data-bs-target="#legal" type="button" role="tab" aria-controls="legal" aria-selected="false">
+                                <i class="fas fa-gavel me-1"></i> Legal
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Tab content -->
+                    <div class="tab-content py-4" id="aboutTabsContent">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                            <h2 class="h4 mb-3">Welcome to Viddy Downloader</h2>
+                            <p>Viddy Downloader is a comprehensive web application designed to help you download videos from various social media platforms with ease. Our mission is to provide a simple, efficient, and reliable solution for all your video downloading needs.</p>
+                            
+                            <p>Version: 1.0.0 (Web Edition)</p>
+                            
+                            <div class="d-flex align-items-center mt-4">
+                                <div class="me-3">
+                                    <img src="{{ url_for('static', filename='img/icon.svg') }}" alt="Viddy Downloader Logo" width="64" height="64">
+                                </div>
+                                <div>
+                                    <h3 class="h5 mb-1">Viddy Downloader</h3>
+                                    <p class="text-muted mb-0">Your ultimate video downloading solution</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Features Tab -->
+                        <div class="tab-pane fade" id="features" role="tabpanel" aria-labelledby="features-tab">
+                            <h2 class="h4 mb-3">Key Features</h2>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex">
+                                        <div class="me-3 text-primary">
+                                            <i class="fas fa-globe fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="h5">Multi-Platform Support</h3>
+                                            <p>Download videos from YouTube, Facebook, Instagram, Twitter, TikTok, Vimeo, and Dailymotion.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex">
+                                        <div class="me-3 text-primary">
+                                            <i class="fas fa-sliders-h fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="h5">Quality Selection</h3>
+                                            <p>Choose from various quality options including HD, SD, and audio-only formats.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex">
+                                        <div class="me-3 text-primary">
+                                            <i class="fas fa-history fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="h5">Download History</h3>
+                                            <p>Keep track of all your downloads with detailed information and status updates.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex">
+                                        <div class="me-3 text-primary">
+                                            <i class="fas fa-crown fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="h5">Premium Features</h3>
+                                            <p>Unlock higher limits and priority support with our premium plans. Ad-free is exclusive to Premium Plus.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Platforms Tab -->
+                        <div class="tab-pane fade" id="platforms" role="tabpanel" aria-labelledby="platforms-tab">
+                            <h2 class="h4 mb-3">Supported Platforms</h2>
+                            <div class="row text-center">
+                                <div class="col-4 col-md-3 mb-4">
+                                    <div class="p-3">
+                                        <i class="fab fa-youtube fa-3x text-danger"></i>
+                                        <p class="mt-2 mb-0">YouTube</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-3 mb-4">
+                                    <div class="p-3">
+                                        <i class="fab fa-facebook fa-3x text-primary"></i>
+                                        <p class="mt-2 mb-0">Facebook</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-3 mb-4">
+                                    <div class="p-3">
+                                        <i class="fab fa-instagram fa-3x text-danger"></i>
+                                        <p class="mt-2 mb-0">Instagram</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-3 mb-4">
+                                    <div class="p-3">
+                                        <i class="fab fa-twitter fa-3x text-info"></i>
+                                        <p class="mt-2 mb-0">Twitter</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-3 mb-4">
+                                    <div class="p-3">
+                                        <i class="fab fa-tiktok fa-3x text-dark"></i>
+                                        <p class="mt-2 mb-0">TikTok</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-3 mb-4">
+                                    <div class="p-3">
+                                        <i class="fab fa-vimeo-v fa-3x text-info"></i>
+                                        <p class="mt-2 mb-0">Vimeo</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-3 mb-4">
+                                    <div class="p-3">
+                                        <i class="fas fa-video fa-3x text-primary"></i>
+                                        <p class="mt-2 mb-0">Dailymotion</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Legal Tab -->
+                        <div class="tab-pane fade" id="legal" role="tabpanel" aria-labelledby="legal-tab">
+                            <h2 class="h4 mb-3">Legal Information</h2>
+                            <div class="mb-4">
+                                <h3 class="h5">License</h3>
+                                <p>Viddy Downloader is licensed under the MIT License. You are free to use this software for personal use.</p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h3 class="h5">Disclaimer</h3>
+                                <p>This application is designed for downloading videos for personal use only. Users are responsible for ensuring they have the right to download content and comply with the terms of service of the respective platforms.</p>
+                                <p>We do not host any of the videos that can be downloaded through this application. Viddy Downloader simply provides a tool to download videos from publicly available sources.</p>
+                            </div>
+                            
+                            <div>
+                                <h3 class="h5">Copyright</h3>
+                                <p>© 2023 Viddy Downloader. All rights reserved.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

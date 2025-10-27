@@ -1,0 +1,31 @@
+{
+    "default_save_path": "C:\\Users\\heman/Downloads",
+    "premium": false,
+    "ad_frequency": "normal",
+    "download_history": [
+        {
+            "url": "https://youtu.be/gER0ceSzD7M?si=fpKJngm69quBbGEg",
+            "platform": "YouTube",
+            "success": false,
+            "result": "Failed",
+            "timestamp": 1759926748.7100587
+        },
+        {
+            "url": "https://youtu.be/gER0ceSzD7M?si=fpKJngm69quBbGEg",
+            "platform": "YouTube",
+            "success": false,
+            "result": "Failed",
+            "timestamp": 1759926768.3630395
+        }
+    ],
+    "max_concurrent_downloads": 3,
+    "theme": "system",
+    "auto_update": true,
+    "analytics_opt_in": true,
+    "monetization": {
+        "payment_methods": [],
+        "subscription_status": "free",
+        "subscription_expiry": null,
+        "referral_code": null
+    }
+}
