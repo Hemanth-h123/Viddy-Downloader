@@ -49,40 +49,16 @@
                         </div>
                     </form>
                     
-                    <!-- Daily Download Limit Display (Videos) -->
+                    <!-- Premium Features Info -->
                     <div class="alert alert-info mt-3">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
                             <div>
-                                <i class="fas fa-video me-2"></i>
-                                <span>Daily Video Downloads: <strong>{{ downloads_today }} / {{ daily_limit }}</strong></span>
-                            </div>
-                            <div class="progress" style="width: 60%; height: 10px;">
-                                <div class="progress-bar bg-success" role="progressbar" 
-                                     style="width: {% if daily_limit != 'Unlimited' %}{{ (downloads_today / daily_limit * 100)|int }}{% else %}0{% endif %}%;" 
-                                     aria-valuenow="{{ downloads_today }}" aria-valuemin="0" aria-valuemax="{{ daily_limit }}">
-                                </div>
+                                <i class="fas fa-crown me-2"></i>
+                                <span>Premium Features Available</span>
                             </div>
                         </div>
                         <small class="text-muted mt-2 d-block"><i class="fas fa-film me-1"></i> Video Quality: {% if plan == 'free' %}Up to 720p{% else %}Best Available{% endif %}</small>
                         <small class="text-muted mt-1 d-block">Maximum file size: {{ max_file_size_mb }}MB</small>
-                    </div>
-
-                    <!-- Daily Image Download Limit Display (Free users) -->
-                    <div class="alert alert-warning mt-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-image me-2"></i>
-                                <span>Daily Image Downloads: <strong>{{ images_today }} / 10</strong></span>
-                                <span class="ms-2 text-muted">Remaining: <strong>{{ (10 - images_today) if images_today <= 10 else 0 }}</strong></span>
-                            </div>
-                            <div class="progress" style="width: 60%; height: 10px;">
-                                <div class="progress-bar bg-warning" role="progressbar"
-                                     style="width: {{ (images_today / 10 * 100)|int }}%;"
-                                     aria-valuenow="{{ images_today }}" aria-valuemin="0" aria-valuemax="10">
-                                </div>
-                            </div>
-                        </div>
-                        <small class="text-muted mt-1 d-block">Free users can download up to 10 images per day.</small>
                     </div>
                 {% else %}
                     <div class="alert alert-info">

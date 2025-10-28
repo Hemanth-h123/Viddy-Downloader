@@ -92,9 +92,12 @@ def download_with_ytdlp(
         "no_warnings": True,
         "progress_hooks": [hook],
         # Retries and network resilience
-        "retries": 5,
-        "fragment_retries": 5,
-        "concurrent_fragment_downloads": 10,
+        "retries": 10,
+        "fragment_retries": 10,
+        "concurrent_fragment_downloads": 5,
+        "socket_timeout": 30,
+        "extractor_retries": 5,
+        "file_access_retries": 5,
         # Cookies can help with sites like Instagram/Facebook if configured
         # Users can place cookies.txt at project root or web/ for auth-required content
     }

@@ -277,8 +277,11 @@ def download():
                         return
                     try:
                         downloader = get_downloader(dl.platform)
+                        # Create downloads directory with proper permissions
                         download_dir = os.path.join(app.root_path, 'downloads')
                         os.makedirs(download_dir, exist_ok=True)
+                        # Ensure the directory is writable
+                        os.chmod(download_dir, 0o755)
 
                         def progress_cb(pct):
                             # Ensure progress updates are committed immediately
