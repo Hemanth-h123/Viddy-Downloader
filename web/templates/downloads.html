@@ -135,9 +135,18 @@
                                                     <ol class="small mb-0">
                                                         <li>Use a private/incognito browser window and log into YouTube</li>
                                                         <li>In the same window, visit <a href="https://www.youtube.com/robots.txt" target="_blank">youtube.com/robots.txt</a></li>
-                                                        <li>Export your cookies to a file named "cookies.txt" and place it in the app's root directory</li>
+                                                        <li>Export your cookies to a file named "cookies.txt" and upload it in <a href="{{ url_for('settings') }}">Settings</a></li>
                                                         <li>Try downloading again</li>
                                                     </ol>
+                                                    <p class="small mt-2">
+                                                        <a href="https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp" target="_blank" class="text-decoration-none">
+                                                            <i class="fas fa-external-link-alt me-1"></i>Learn how to export cookies
+                                                        </a>
+                                                        |
+                                                        <a href="https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies" target="_blank" class="text-decoration-none">
+                                                            <i class="fas fa-external-link-alt me-1"></i>YouTube cookie guide
+                                                        </a>
+                                                    </p>
                                                 </div>
                                                 {% endif %}
                                             {% endif %}
