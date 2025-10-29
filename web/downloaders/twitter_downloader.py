@@ -11,7 +11,7 @@ class TwitterDownloader(BaseDownloader):
         super().__init__()
         self.platform = "Twitter"
     
-    def download(self, url, save_path=None, quality="Best", progress_callback=None, status_callback=None, cancel_check=None):
+    def download(self, url, save_path=None, quality="Best", progress_callback=None, status_callback=None, cancel_check=None, extra_opts=None):
         """Download video from Twitter
         
         Args:
@@ -21,6 +21,7 @@ class TwitterDownloader(BaseDownloader):
             progress_callback (callable): Function to call with progress updates (0-100)
             status_callback (callable): Function to call with status updates
             cancel_check (callable): Function to check if download should be cancelled
+            extra_opts (dict): Extra options to pass to the downloader
             
         Returns:
             str: Path to the downloaded file, or None if download failed
@@ -51,6 +52,7 @@ class TwitterDownloader(BaseDownloader):
                 progress_callback=progress_callback,
                 status_callback=status_callback,
                 cancel_check=cancel_check,
+                extra_opts=extra_opts or {},
             )
             return final_path
                 

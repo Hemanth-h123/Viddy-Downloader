@@ -59,6 +59,49 @@
                         </div>
                         <small class="text-muted mt-2 d-block"><i class="fas fa-film me-1"></i> Video Quality: {% if plan == 'free' %}Up to 720p{% else %}Best Available{% endif %}</small>
                         <small class="text-muted mt-1 d-block">Maximum file size: {{ max_file_size_mb }}MB</small>
+                        
+                        <!-- Daily Limits Info -->
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div>
+                                <small class="text-muted"><i class="fas fa-video me-1"></i> Daily video limit: 
+                                {% if daily_limit is string and daily_limit|lower == 'unlimited' %}
+                                    Unlimited
+                                {% else %}
+                                    {{ daily_limit }}
+                                {% endif %}
+                                </small>
+                            </div>
+                            <div>
+                                <small class="text-muted">Remaining: 
+                                {% if daily_limit is string and daily_limit|lower == 'unlimited' %}
+                                    Unlimited
+                                {% else %}
+                                    <strong>{{ downloads_today }}</strong> of {{ daily_limit }}
+                                {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <div>
+                                <small class="text-muted"><i class="fas fa-image me-1"></i> Daily image limit: 
+                                {% if images_limit is string and images_limit|lower == 'unlimited' %}
+                                    Unlimited
+                                {% else %}
+                                    {{ images_limit }}
+                                {% endif %}
+                                </small>
+                            </div>
+                            <div>
+                                <small class="text-muted">Remaining: 
+                                {% if images_limit is string and images_limit|lower == 'unlimited' %}
+                                    Unlimited
+                                {% else %}
+                                    <strong>{{ images_left }}</strong> of {{ images_limit }}
+                                {% endif %}
+                                </small>
+                            </div>
+                        </div>
                     </div>
                 {% else %}
                     <div class="alert alert-info">

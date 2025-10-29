@@ -21,16 +21,17 @@ class InstagramDownloader(BaseDownloader):
             return path[-1].split('?')[0]
         return None
 
-    def download(self, url, save_path=None, quality="Best", progress_callback=None, status_callback=None, cancel_check=None):
-        """Download Instagram video from the given URL.
+    def download(self, url, save_path=None, quality="Best", progress_callback=None, status_callback=None, cancel_check=None, extra_opts=None):
+        """Download Instagram content (video or image) from the given URL.
         
         Args:
-            url (str): The Instagram video URL
-            save_path (str): The directory to save the downloaded video
-            quality (str): The desired quality of the video (not used for Instagram)
+            url (str): The Instagram content URL
+            save_path (str): The directory to save the downloaded content
+            quality (str): The desired quality of the content (not used for Instagram)
             progress_callback (callable): Function to call with progress updates (0-100)
             status_callback (callable): Function to call with status updates
             cancel_check (callable): Function to check if download should be cancelled
+            extra_opts (dict): Extra options to pass to the downloader
             
         Returns:
             str: Path to the downloaded file, or None if download failed
@@ -45,6 +46,7 @@ class InstagramDownloader(BaseDownloader):
                 progress_callback=progress_callback,
                 status_callback=status_callback,
                 cancel_check=cancel_check,
+                extra_opts=extra_opts or {},
                 media_type="auto",  # Auto-detect videos or images
             )
             return final_path

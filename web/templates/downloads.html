@@ -47,26 +47,6 @@
                 </h2>
             </div>
             <div class="card-body">
-                <div class="alert alert-info d-flex justify-content-between align-items-center" role="alert">
-                    <div>
-                        <strong>Daily limits</strong>:
-                        {% if daily_limit_videos is string and daily_limit_videos|lower == 'unlimited' %}
-                            Unlimited videos per day{% if plan_id == 'free' %}, data cap <code>3GB</code>{% endif %}.
-                        {% else %}
-                            <code>{{ daily_limit_videos }}</code> videos per day{% if plan_id == 'free' %}, data cap <code>3GB</code>{% endif %}.
-                        {% endif %}
-                    </div>
-                    <div>
-                        {% if videos_remaining is not none %}
-                            Remaining today: <strong>{{ videos_remaining }}</strong> of {{ daily_limit_videos }} videos
-                        {% else %}
-                            Remaining today: <strong>Unlimited</strong> videos
-                        {% endif %}
-                        {% if plan_id == 'free' %}
-                            , data left: <strong>{{ (data_remaining_bytes or 0) // (1024*1024) }}</strong> MB of {{ (free_data_cap // (1024*1024*1024)) }} GB
-                        {% endif %}
-                    </div>
-                </div>
                 {% if downloads %}
                     <div class="table-responsive">
                         <table class="table table-hover">

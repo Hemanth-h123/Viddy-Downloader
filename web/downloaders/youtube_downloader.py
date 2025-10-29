@@ -38,7 +38,7 @@ class YouTubeDownloader(BaseDownloader):
         import logging
         logger = logging.getLogger(__name__)
         
-        clean_url = self.clean_url(url)
+        clean_url = self._clean_url(url)
         
         if status_callback:
             status_callback("Preparing YouTube download...")
