@@ -443,9 +443,9 @@ def api_download_status(download_id):
         "error_message": dl.error_message or ""
     })
 
-@app.route('/download/file/<int:download_id>')
+@app.route('/serve/file/<int:download_id>')
 @login_required
-def download_file(download_id):
+def serve_download_file(download_id):
     """Serve the downloaded file to the user"""
     dl = Download.query.get_or_404(download_id)
     if dl.user_id != current_user.id:

@@ -135,15 +135,15 @@
                                         {% if download.status == 'completed' and download.file_path %}
                                             {% set file_ext = download.file_path.split('.')[-1].lower() %}
                                             {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'] %}
-                                                <a href="{{ url_for('download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Image">
+                                                <a href="{{ url_for('serve_download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Image">
                                                     <i class="fas fa-image"></i>
                                                 </a>
                                             {% elif file_ext in ['mp3', 'wav', 'm4a', 'flac', 'ogg'] %}
-                                                <a href="{{ url_for('download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Audio">
+                                                <a href="{{ url_for('serve_download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Audio">
                                                     <i class="fas fa-music"></i>
                                                 </a>
                                             {% else %}
-                                                <a href="{{ url_for('download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Video">
+                                                <a href="{{ url_for('serve_download_file', download_id=download.id) }}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Download Video">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                             {% endif %}
