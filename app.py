@@ -277,8 +277,16 @@ def download():
                         return
                     try:
                         downloader = get_downloader(dl.platform)
-                        # Create downloads directory with proper permissions
-                        download_dir = os.path.join(app.root_path, 'downloads')
+                        # Check if running on Render
+                        is_render = os.environ.get('RENDER', '').lower() == 'true'
+                        
+                        if is_render:
+                            # Use /tmp directory on Render which is writable
+                            download_dir = os.path.join('/tmp', 'downloads')
+                        else:
+                            # Use local directory for development
+                            download_dir = os.path.join(app.root_path, 'downloads')
+                            
                         os.makedirs(download_dir, exist_ok=True)
                         # Ensure the directory is writable
                         os.chmod(download_dir, 0o755)
@@ -434,6 +442,39 @@ def api_download_status(download_id):
         "file_path": bool(dl.file_path),
         "error_message": dl.error_message or ""
     })
+
+@app.route('/download/file/<int:download_id>')
+@login_required
+def download_file(download_id):
+    """Serve the downloaded file to the user"""
+    dl = Download.query.get_or_404(download_id)
+    if dl.user_id != current_user.id:
+        flash('Access denied', 'error')
+        return redirect(url_for('downloads'))
+    
+    if dl.status != 'completed' or not dl.file_path or not os.path.exists(dl.file_path):
+        flash('File not available for download', 'error')
+        return redirect(url_for('downloads'))
+    
+    # Get filename from the path
+    filename = os.path.basename(dl.file_path)
+    
+    # Determine content type based on file extension
+    content_type = None
+    if filename.lower().endswith(('.mp4', '.mov', '.avi')):
+        content_type = 'video/mp4'
+    elif filename.lower().endswith(('.jpg', '.jpeg')):
+        content_type = 'image/jpeg'
+    elif filename.lower().endswith('.png'):
+        content_type = 'image/png'
+    
+    # Send the file as attachment
+    return send_file(
+        dl.file_path,
+        as_attachment=True,
+        download_name=filename,
+        mimetype=content_type
+    )
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
