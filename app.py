@@ -290,6 +290,22 @@ def download():
                         os.makedirs(download_dir, exist_ok=True)
                         # Ensure the directory is writable
                         os.chmod(download_dir, 0o755)
+                        
+                        # Add extra options for YouTube to handle bot detection
+                        extra_opts = None
+                        if dl.platform.lower() == 'youtube':
+                            extra_opts = {
+                                # Add PO Token support for YouTube
+                                "extractor_args": {
+                                    "youtube": {
+                                        "player_skip": ["webpage", "configs"],
+                                    }
+                                },
+                                # Increase retries for bot detection
+                                "retries": 15,
+                                "fragment_retries": 15,
+                                "extractor_retries": 10,
+                            }
 
                         def progress_cb(pct):
                             # Ensure progress updates are committed immediately
@@ -316,12 +332,13 @@ def download():
                         while retry_count < max_retries:
                             try:
                                 final_path = downloader.download(
-                                    url=dl.url,
-                                    save_path=download_dir,
-                                    quality=dl.quality,
-                                    progress_callback=progress_cb,
-                                    status_callback=status_cb
-                                )
+                            url=dl.url,
+                            save_path=download_dir,
+                            quality=dl.quality,
+                            progress_callback=progress_cb,
+                            status_callback=status_cb,
+                            extra_opts=extra_opts
+                        )
                                 
                                 # If download succeeded, break the retry loop
                                 if final_path and os.path.exists(final_path):
@@ -691,6 +708,14 @@ def settings():
                 flash('Profile updated successfully.', 'success')
             else:
                 flash('Settings saved successfully.', 'success')
+                
+            # Handle cookie file upload
+            if 'cookie_file' in request.files:
+                cookie_file = request.files['cookie_file']
+                if cookie_file.filename != '':
+                    cookie_path = os.path.join(app.root_path, 'cookies.txt')
+                    cookie_file.save(cookie_path)
+                    flash('YouTube cookies file uploaded successfully!', 'success')
         except Exception as e:
             db.session.rollback()
             flash(f'Failed to update profile: {e}', 'error')

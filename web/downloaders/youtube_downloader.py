@@ -19,7 +19,7 @@ class YouTubeDownloader(BaseDownloader):
         super().__init__()
         self.platform_name = "YouTube"
     
-    def download(self, url, save_path, quality="Best", progress_callback=None, status_callback=None, cancel_check=None):
+    def download(self, url, save_path, quality="Best", progress_callback=None, status_callback=None, cancel_check=None, extra_opts=None):
         """Download video from YouTube
         
         Args:
@@ -29,6 +29,7 @@ class YouTubeDownloader(BaseDownloader):
             progress_callback (callable): Function to call with progress updates (0-100)
             status_callback (callable): Function to call with status updates
             cancel_check (callable): Function to check if download should be cancelled
+            extra_opts (dict): Extra options to pass to yt-dlp
             
         Returns:
             str: Path to the downloaded file, or None if download failed
@@ -37,6 +38,28 @@ class YouTubeDownloader(BaseDownloader):
             url = self._clean_url(url)
             if status_callback:
                 status_callback("Preparing download...")
+                
+            # Default options to handle YouTube bot detection
+            youtube_opts = {
+                'retries': 15,
+                'fragment_retries': 15,
+                'extractor_retries': 10,
+                'extractor_args': {'youtube': {'skip_webpage': False, 'player_skip': False}},
+            }
+            
+            # Check for cookies file
+            cookies_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'cookies.txt')
+            if os.path.exists(cookies_file):
+                youtube_opts['cookiefile'] = cookies_file
+                if status_callback:
+                    status_callback("Using cookies file for authentication...")
+            
+            # Merge with any extra options provided
+            if extra_opts:
+                youtube_opts.update(extra_opts)
+            else:
+                extra_opts = youtube_opts
+                
             final_path = download_with_ytdlp(
                 url=url,
                 save_path=save_path,
@@ -45,9 +68,12 @@ class YouTubeDownloader(BaseDownloader):
                 progress_callback=progress_callback,
                 status_callback=status_callback,
                 cancel_check=cancel_check,
+                extra_opts=extra_opts,
             )
             return final_path
-        except Exception:
+        except Exception as e:
+            if status_callback:
+                status_callback(f"Download failed: {str(e)}")
             return None
             
     def _clean_url(self, url):
