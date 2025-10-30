@@ -43,7 +43,7 @@ class YouTubeDownloader(BaseDownloader):
         if status_callback:
             status_callback("Preparing YouTube download...")
         
-        # Default options to handle YouTube bot detection
+        # Enhanced options to handle YouTube bot detection
         youtube_opts = {
             'retries': 20,
             'fragment_retries': 20,
@@ -52,43 +52,92 @@ class YouTubeDownloader(BaseDownloader):
             'socket_timeout': 60,
             'sleep_interval': 5,  # Wait 5 seconds between retries
             'max_sleep_interval': 10,  # Maximum wait of 10 seconds
+            'geo_bypass': True,
+            'geo_bypass_country': 'US',
+            'no_check_certificate': True,
+            'nocheckcertificate': True,
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'DNT': '1',
+                'Connection': 'keep-alive',
+            },
         }
         
         # Try multiple cookie sources
         root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         
-        # 1. Check for cookies.txt in various locations
-        cookie_locations = [
-            os.path.join(root_dir, 'cookies.txt'),
-            os.path.join(root_dir, 'youtube_cookies.txt'),
-            os.path.join(os.path.expanduser('~'), 'cookies.txt'),
-            os.path.join(os.path.expanduser('~'), 'youtube_cookies.txt'),
-        ]
+        # Check if we're in a production environment (like Render)
+        is_production = os.environ.get('RENDER') == 'true' or '/opt/render' in os.path.expanduser('~')
         
-        for cookie_file in cookie_locations:
-            if os.path.exists(cookie_file) and os.path.getsize(cookie_file) > 0:
-                youtube_opts['cookiefile'] = cookie_file
-                if status_callback:
-                    status_callback(f"Using cookies file: {os.path.basename(cookie_file)}")
-                logger.info(f"Using cookies file for YouTube: {cookie_file}")
-                break
-        
-        # 2. Try browser cookies if no cookie file found
-        if 'cookiefile' not in youtube_opts:
-            # Try common browsers in order of popularity
-            browsers = ['chrome', 'firefox', 'edge', 'safari', 'opera']
-            for browser in browsers:
-                try:
-                    youtube_opts['cookiesfrombrowser'] = (browser, None)  # None = default profile
+        if is_production:
+            # In production, don't try to use browser cookies which will fail
+            logger.info("Running in production environment, using production-specific settings")
+            if status_callback:
+                status_callback("Using production download settings...")
+            
+            # Add production-specific settings
+            youtube_opts.update({
+                'cookiesfrombrowser': None,  # Don't try browser cookies in production
+                'force_generic_extractor': False,
+                'extract_flat': True,
+                'mark_watched': False,
+                'ignoreerrors': True,
+                'skip_unavailable_fragments': True,
+                'youtube_include_dash_manifest': False,  # Skip DASH manifests
+                'youtube_include_hls_manifest': False,   # Skip HLS manifests
+            })
+            
+            # Check for cookies.txt in production locations
+            production_cookie_locations = [
+                '/app/cookies.txt',
+                '/app/youtube_cookies.txt',
+                os.path.join(root_dir, 'cookies.txt'),
+                os.path.join(root_dir, 'youtube_cookies.txt'),
+            ]
+            
+            for cookie_file in production_cookie_locations:
+                if os.path.exists(cookie_file) and os.path.getsize(cookie_file) > 0:
+                    youtube_opts['cookiefile'] = cookie_file
                     if status_callback:
-                        status_callback(f"Trying cookies from {browser.title()} browser...")
-                    logger.info(f"Attempting to extract cookies from {browser}")
-                    
-                    # We'll test this browser in the actual download
+                        status_callback(f"Using cookies file: {os.path.basename(cookie_file)}")
+                    logger.info(f"Using cookies file for YouTube: {cookie_file}")
                     break
-                except Exception as e:
-                    logger.warning(f"Failed to extract cookies from {browser}: {str(e)}")
-                    continue
+        else:
+            # In development, try local cookie files first
+            cookie_locations = [
+                os.path.join(root_dir, 'cookies.txt'),
+                os.path.join(root_dir, 'youtube_cookies.txt'),
+                os.path.join(os.path.expanduser('~'), 'cookies.txt'),
+                os.path.join(os.path.expanduser('~'), 'youtube_cookies.txt'),
+            ]
+            
+            for cookie_file in cookie_locations:
+                if os.path.exists(cookie_file) and os.path.getsize(cookie_file) > 0:
+                    youtube_opts['cookiefile'] = cookie_file
+                    if status_callback:
+                        status_callback(f"Using cookies file: {os.path.basename(cookie_file)}")
+                    logger.info(f"Using cookies file for YouTube: {cookie_file}")
+                    break
+            
+            # Try browser cookies if no cookie file found
+            if 'cookiefile' not in youtube_opts:
+                # Try common browsers in order of popularity
+                browsers = ['chrome', 'firefox', 'edge', 'safari', 'opera']
+                for browser in browsers:
+                    try:
+                        youtube_opts['cookiesfrombrowser'] = (browser, None)  # None = default profile
+                        if status_callback:
+                            status_callback(f"Trying cookies from {browser.title()} browser...")
+                        logger.info(f"Attempting to extract cookies from {browser}")
+                        
+                        # We'll test this browser in the actual download
+                        break
+                    except Exception as e:
+                        logger.warning(f"Failed to extract cookies from {browser}: {str(e)}")
+                        continue
         
         # Merge with any extra options provided
         if extra_opts:
@@ -127,9 +176,20 @@ class YouTubeDownloader(BaseDownloader):
             fallback_opts = youtube_opts.copy()
             fallback_opts.pop('cookiesfrombrowser', None)
             
-            # Add anonymous IP option
-            fallback_opts['geo_bypass'] = True
-            fallback_opts['geo_bypass_country'] = 'US'
+            # Enhanced fallback options for bot detection
+            fallback_opts.update({
+                'skip_download': False,
+                'writesubtitles': False,
+                'verbose': True,  # Enable verbose output for debugging
+                'force_generic_extractor': False,
+                'sleep_requests': 1,  # Sleep between requests
+                'max_sleep_interval': 5,
+                'ignoreerrors': True,  # Continue on download errors
+                'external_downloader_args': ['--max-retries', '10'],
+                'postprocessor_args': {
+                    'ffmpeg': ['-nostdin', '-loglevel', 'warning']
+                }
+            })
             
             final_path = download_with_ytdlp(
                 url=url,
@@ -144,9 +204,28 @@ class YouTubeDownloader(BaseDownloader):
             
             return final_path
         except Exception as e:
-            logger.error(f"YouTube download failed completely: {str(e)}")
+            error_msg = str(e)
+            logger.error(f"YouTube download failed completely: {error_msg}")
+            
+            # Provide more user-friendly error messages
+            if "Sign in to confirm you're not a bot" in error_msg:
+                friendly_msg = "YouTube detected automated access. We're working on a solution. Please try again later or try a different video."
+            elif "could not find chrome cookies database" in error_msg:
+                friendly_msg = "Authentication issue in server environment. Please try again later."
+            elif "Private video" in error_msg:
+                friendly_msg = "This video is private and cannot be downloaded without proper authentication."
+            elif "This video is unavailable" in error_msg:
+                friendly_msg = "This video is unavailable. It may have been removed or restricted."
+            elif "Video unavailable" in error_msg:
+                friendly_msg = "This video is unavailable. It may have been removed or restricted."
+            elif "This video has been removed" in error_msg:
+                friendly_msg = "This video has been removed by the uploader."
+            else:
+                friendly_msg = f"Download failed: {error_msg}"
+                
             if status_callback:
-                status_callback(f"Download failed: {str(e)}")
+                status_callback(friendly_msg)
+                
             return None
             
     def _clean_url(self, url):
