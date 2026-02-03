@@ -37,6 +37,11 @@ def create_app():
                 static_url_path="/static")
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key_change_in_production')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'sqlite:///downloader.db')
+    # Use writable temp storage for SQLite on Render
+    if os.environ.get('RENDER', '').lower() == 'true':
+        uri = app.config['SQLALCHEMY_DATABASE_URI'] or ''
+        if uri.startswith('sqlite:///'):
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/downloader.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # reCAPTCHA keys (human verification)
     app.config['RECAPTCHA_PUBLIC_KEY'] = os.environ.get('RECAPTCHA_PUBLIC_KEY')
@@ -57,6 +62,14 @@ def create_app():
     # Initialize database
     from web.models import db
     db.init_app(app)
+    # Ensure database tables exist on startup (works with WSGI servers like gunicorn)
+    try:
+        with app.app_context():
+            db.create_all()
+    except Exception as e:
+        app.logger = app.logger if hasattr(app, 'logger') else None
+        if app.logger:
+            app.logger.error(f"Database initialization failed: {e}")
     
     # Initialize login manager
     login_manager = LoginManager()
