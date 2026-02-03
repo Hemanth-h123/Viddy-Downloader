@@ -291,17 +291,15 @@ def download():
                         # Ensure the directory is writable
                         os.chmod(download_dir, 0o755)
                         
-                        # Add extra options for YouTube to handle bot detection
                         extra_opts = None
                         if dl.platform.lower() == 'youtube':
                             extra_opts = {
-                                # Add PO Token support for YouTube
                                 "extractor_args": {
                                     "youtube": {
-                                        "player_skip": ["webpage", "configs"],
+                                        "skip_webpage": False,
+                                        "player_skip": False,
                                     }
                                 },
-                                # Increase retries for bot detection
                                 "retries": 15,
                                 "fragment_retries": 15,
                                 "extractor_retries": 10,
