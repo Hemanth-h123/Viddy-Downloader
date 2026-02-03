@@ -94,6 +94,9 @@ class YouTubeDownloader(BaseDownloader):
             production_cookie_locations = [
                 '/app/cookies.txt',
                 '/app/youtube_cookies.txt',
+                '/opt/render/project/src/cookies.txt',
+                '/opt/render/project/src/youtube_cookies.txt',
+                '/tmp/cookies.txt',
                 os.path.join(root_dir, 'cookies.txt'),
                 os.path.join(root_dir, 'youtube_cookies.txt'),
             ]
@@ -172,9 +175,9 @@ class YouTubeDownloader(BaseDownloader):
             if status_callback:
                 status_callback("Retrying with alternative authentication...")
             
-            # Remove browser cookies but keep cookie file if present
             fallback_opts = youtube_opts.copy()
             fallback_opts.pop('cookiesfrombrowser', None)
+            fallback_opts.pop('cookiefile', None)
             
             # Enhanced fallback options for bot detection
             fallback_opts.update({
