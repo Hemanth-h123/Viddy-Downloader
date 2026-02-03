@@ -81,8 +81,9 @@ def download_with_ytdlp(
                 if ffmpeg_available:
                     fmt = f"bv*[height={height}]+ba/b[height={height}]/bv*+ba/best"
                 else:
-                    # Without ffmpeg, select a single progressive/single-file format when possible
-                    fmt = f"best[height={height}][ext=mp4]/best[height<={height}][ext=mp4]/best"
+                    if q == "1080p":
+                        height = "720"
+                    fmt = f"best[height={height}][ext=mp4]/best[height<={height}][ext=mp4]/best[ext=mp4]/best"
 
     ytdlp_opts: Dict[str, Any] = {
         "outtmpl": os.path.join(save_path, "%(_title)s_%(id)s.%(ext)s"),
@@ -100,6 +101,13 @@ def download_with_ytdlp(
         "file_access_retries": 5,
         # YouTube specific options to handle bot detection
         "extractor_args": {'youtube': {'skip_webpage': False, 'player_skip': False}},
+        "http_headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "DNT": "1",
+            "Connection": "keep-alive",
+        },
         # Cookies can help with sites like Instagram/Facebook if configured
         # Users can place cookies.txt at project root or web/ for auth-required content
     }
@@ -149,6 +157,13 @@ def download_with_ytdlp(
         ytdlp_opts["username"] = username
         ytdlp_opts["password"] = password
 
+    prod_env = any(os.environ.get(k) for k in ("RENDER", "RAILWAY", "HEROKU", "VERCEL", "FLY_IO", "PRODUCTION")) or os.path.exists("/.dockerenv")
+    if prod_env:
+        ytdlp_opts.pop("cookiesfrombrowser", None)
+        ytdlp_opts.setdefault("youtube_include_dash_manifest", False)
+        ytdlp_opts.setdefault("youtube_include_hls_manifest", False)
+        ytdlp_opts.setdefault("nocheckcertificate", True)
+
     if extra_opts:
         ytdlp_opts.update(extra_opts)
 
@@ -190,14 +205,24 @@ def download_with_ytdlp(
         return None
     except Exception as e:
         error_msg = str(e).lower()
-        # Check if it's a DPAPI or cookie-related error
-        if any(keyword in error_msg for keyword in ["dpapi", "failed to decrypt", "cookies", "browser"]):
+        # Check if it's a DPAPI or cookie/login-related error
+        if any(keyword in error_msg for keyword in [
+            "dpapi",
+            "failed to decrypt",
+            "cookies",
+            "browser",
+            "login required",
+            "sign in",
+            "private",
+            "account required",
+        ]):
             logger.warning("Browser cookie extraction failed (likely DPAPI issue): %s", e)
             logger.info("Retrying download without browser cookies...")
             
             # Create a new options dict without browser cookies
             fallback_opts = ytdlp_opts.copy()
             fallback_opts.pop("cookiesfrombrowser", None)
+            fallback_opts.pop("cookiefile", None)
             
             if status_callback:
                 status_callback("Retrying without browser cookies...")
