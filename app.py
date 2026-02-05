@@ -58,6 +58,8 @@ def create_app():
     app.config['GOOGLE_CLIENT_SECRET'] = os.environ.get('GOOGLE_CLIENT_SECRET')
     app.config['FACEBOOK_CLIENT_ID'] = os.environ.get('FACEBOOK_CLIENT_ID')
     app.config['FACEBOOK_CLIENT_SECRET'] = os.environ.get('FACEBOOK_CLIENT_SECRET')
+    # Feature flags
+    app.config['SUSPEND_YOUTUBE'] = os.environ.get('SUSPEND_YOUTUBE', '').lower() == 'true'
     
     # Initialize database
     from web.models import db
