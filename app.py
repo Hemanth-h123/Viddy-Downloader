@@ -724,9 +724,13 @@ def settings():
             if 'cookie_file' in request.files:
                 cookie_file = request.files['cookie_file']
                 if cookie_file.filename != '':
-                    cookie_path = os.path.join(app.root_path, 'cookies.txt')
-                    cookie_file.save(cookie_path)
-                    flash('YouTube cookies file uploaded successfully!', 'success')
+                    is_render = os.environ.get('RENDER', '').lower() == 'true'
+                    cookie_path = '/tmp/cookies.txt' if is_render else os.path.join(app.root_path, 'cookies.txt')
+                    try:
+                        cookie_file.save(cookie_path)
+                        flash('YouTube cookies file uploaded successfully!', 'success')
+                    except Exception as e:
+                        flash(f'Failed to save cookies file: {e}', 'error')
         except Exception as e:
             db.session.rollback()
             flash(f'Failed to update profile: {e}', 'error')
