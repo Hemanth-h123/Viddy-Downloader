@@ -239,6 +239,10 @@ def download():
         if not platform:
             flash('Unsupported URL or platform', 'error')
             return redirect(url_for('index'))
+        # Suspend specific platforms via env flags (e.g., YouTube)
+        if platform.lower() == 'youtube' and os.environ.get('SUSPEND_YOUTUBE', '').lower() == 'true':
+            flash('YouTube downloads are temporarily suspended. Please try again later.', 'error')
+            return redirect(url_for('index'))
         
         # Determine content type (image or video)
         content_type = 'image' if any(x in url.lower() for x in ['pinterest', 'instagram', '/p/', '/photo/']) else 'video'
