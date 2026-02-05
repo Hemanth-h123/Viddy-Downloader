@@ -122,10 +122,12 @@
                     <div class="card-body">
                         <h5 class="card-title">Supported Platforms</h5>
                         <div class="row text-center">
+                            {% if not app_config.SUSPEND_YOUTUBE %}
                             <div class="col-4 col-md-2 mb-3">
                                 <i class="fab fa-youtube fa-2x text-danger"></i>
                                 <p class="mt-2">YouTube</p>
                             </div>
+                            {% endif %}
                             <div class="col-4 col-md-2 mb-3">
                                 <i class="fab fa-facebook fa-2x text-primary"></i>
                                 <p class="mt-2">Facebook</p>
