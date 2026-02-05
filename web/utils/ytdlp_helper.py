@@ -60,7 +60,8 @@ def download_with_ytdlp(
                 status_callback("Download finished, processing file...")
 
     # Map our "quality" to yt-dlp format selector based on media type
-    ffmpeg_available = shutil.which("ffmpeg") is not None
+    ffmpeg_env = os.environ.get("FFMPEG_PATH") or os.environ.get("FFMPEG_LOCATION")
+    ffmpeg_available = (shutil.which("ffmpeg") is not None) or (ffmpeg_env and os.path.exists(ffmpeg_env))
     
     if media_type == "image":
         # For images, get the highest resolution image
@@ -113,8 +114,9 @@ def download_with_ytdlp(
     }
 
     if ffmpeg_available:
-        # Only set merge target when ffmpeg is present
         ytdlp_opts["merge_output_format"] = "mp4"
+        if ffmpeg_env and os.path.exists(ffmpeg_env):
+            ytdlp_opts["ffmpeg_location"] = ffmpeg_env
 
     # Apply auth options from config if available
     try:
