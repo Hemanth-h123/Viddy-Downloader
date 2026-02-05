@@ -6,6 +6,7 @@ Downloader module for the web application
 """
 
 import re
+import os
 from urllib.parse import urlparse
 
 # Import downloader implementations
@@ -88,6 +89,9 @@ def get_downloader(platform):
     platform = platform.lower()
     
     if platform == "youtube":
+        # Allow suspension via environment variable
+        if os.environ.get('SUSPEND_YOUTUBE', '').lower() == 'true':
+            return None
         return YouTubeDownloader()
     elif platform == "facebook":
         return FacebookDownloader()
