@@ -60,6 +60,8 @@ def create_app():
     app.config['FACEBOOK_CLIENT_SECRET'] = os.environ.get('FACEBOOK_CLIENT_SECRET')
     # Feature flags
     app.config['SUSPEND_YOUTUBE'] = os.environ.get('SUSPEND_YOUTUBE', '').lower() == 'true'
+    app.config['MONETIZATION_ENABLED'] = os.environ.get('MONETIZATION_ENABLED', 'true').lower() == 'true'
+    app.config['ADSENSE_CLIENT_ID'] = os.environ.get('ADSENSE_CLIENT_ID', '')
     
     # Initialize database
     from web.models import db
