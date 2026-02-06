@@ -65,6 +65,7 @@
                         </div>
                         
                         <!-- YouTube Authentication Section -->
+                        {% if not config.SUSPEND_YOUTUBE %}
                         <div class="mb-4">
                             <h2 class="h5 mb-3">YouTube Authentication</h2>
                             <div class="alert alert-info">
@@ -84,6 +85,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% endif %}
                         
                         <!-- Subscription Section -->
                         <div class="mb-4">
