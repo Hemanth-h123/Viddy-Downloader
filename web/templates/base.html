@@ -11,6 +11,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Broadway&family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    
+    <!-- Google AdSense -->
+    {% if config.MONETIZATION_ENABLED and config.ADSENSE_CLIENT_ID %}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config.ADSENSE_CLIENT_ID }}"
+     crossorigin="anonymous"></script>
+    {% endif %}
+
     {% block extra_css %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
