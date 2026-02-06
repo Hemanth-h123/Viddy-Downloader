@@ -64,7 +64,7 @@
                                 <tr>
                                     <td>
                                         {% if download.platform == 'youtube' %}
-                                            <i class="fab fa-youtube text-danger"></i> YouTube
+                                            <i class="fas fa-globe"></i> Unsupported
                                         {% elif download.platform == 'facebook' %}
                                             <i class="fab fa-facebook text-primary"></i> Facebook
                                         {% elif download.platform == 'instagram' %}
@@ -108,25 +108,10 @@
                                             <span class="badge bg-danger">Failed</span>
                                             {% if download.error_message %}
                                                 <small class="d-block text-danger mt-1">{{ download.error_message }}</small>
-                                                {% if 'bot' in download.error_message and 'youtube' in download.platform.lower() %}
+                                                {% if 'bot' in download.error_message %}
                                                 <div class="alert alert-warning mt-2">
-                                                    <h6><i class="fas fa-exclamation-triangle"></i> YouTube Bot Detection</h6>
-                                                    <p class="small mb-0">YouTube is requiring authentication to verify you're not a bot. To fix this:</p>
-                                                    <ol class="small mb-0">
-                                                        <li>Use a private/incognito browser window and log into YouTube</li>
-                                                        <li>In the same window, visit <a href="https://www.youtube.com/robots.txt" target="_blank">youtube.com/robots.txt</a></li>
-                                                        <li>Export your cookies to a file named "cookies.txt" and upload it in <a href="{{ url_for('settings') }}">Settings</a></li>
-                                                        <li>Try downloading again</li>
-                                                    </ol>
-                                                    <p class="small mt-2">
-                                                        <a href="https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp" target="_blank" class="text-decoration-none">
-                                                            <i class="fas fa-external-link-alt me-1"></i>Learn how to export cookies
-                                                        </a>
-                                                        |
-                                                        <a href="https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies" target="_blank" class="text-decoration-none">
-                                                            <i class="fas fa-external-link-alt me-1"></i>YouTube cookie guide
-                                                        </a>
-                                                    </p>
+                                                    <h6><i class="fas fa-exclamation-triangle"></i> Authentication Required</h6>
+                                                    <p class="small mb-0">This platform may require authentication to verify you're not a bot.</p>
                                                 </div>
                                                 {% endif %}
                                             {% endif %}
