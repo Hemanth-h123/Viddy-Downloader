@@ -122,7 +122,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Supported Platforms</h5>
                         <div class="row text-center">
-                            {% if not app_config.SUSPEND_YOUTUBE %}
+                            {% if not config.SUSPEND_YOUTUBE %}
                             <div class="col-4 col-md-2 mb-3">
                                 <i class="fab fa-youtube fa-2x text-danger"></i>
                                 <p class="mt-2">YouTube</p>
@@ -243,22 +243,30 @@
                 const url = this.value.trim();
                 if (url) {
                     // Simple platform detection based on URL
+                    let isYoutube = false;
+                    {% if not config.SUSPEND_YOUTUBE %}
                     if (url.includes('youtube.com') || url.includes('youtu.be')) {
                         platformInfo.innerHTML = '<i class="fab fa-youtube text-danger me-1"></i> YouTube video detected';
-                    } else if (url.includes('facebook.com') || url.includes('fb.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-facebook text-primary me-1"></i> Facebook video detected';
-                    } else if (url.includes('instagram.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-instagram text-danger me-1"></i> Instagram video detected';
-                    } else if (url.includes('twitter.com') || url.includes('x.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-twitter text-info me-1"></i> Twitter video detected';
-                    } else if (url.includes('tiktok.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-tiktok text-dark me-1"></i> TikTok video detected';
-                    } else if (url.includes('vimeo.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-vimeo-v text-info me-1"></i> Vimeo video detected';
-                    } else if (url.includes('dailymotion.com') || url.includes('dai.ly')) {
-                        platformInfo.innerHTML = '<i class="fas fa-video text-primary me-1"></i> Dailymotion video detected';
-                    } else {
-                        platformInfo.innerHTML = '<i class="fas fa-question-circle text-muted me-1"></i> Unknown platform';
+                        isYoutube = true;
+                    }
+                    {% endif %}
+
+                    if (!isYoutube) {
+                        if (url.includes('facebook.com') || url.includes('fb.com')) {
+                            platformInfo.innerHTML = '<i class="fab fa-facebook text-primary me-1"></i> Facebook video detected';
+                        } else if (url.includes('instagram.com')) {
+                            platformInfo.innerHTML = '<i class="fab fa-instagram text-danger me-1"></i> Instagram video detected';
+                        } else if (url.includes('twitter.com') || url.includes('x.com')) {
+                            platformInfo.innerHTML = '<i class="fab fa-twitter text-info me-1"></i> Twitter video detected';
+                        } else if (url.includes('tiktok.com')) {
+                            platformInfo.innerHTML = '<i class="fab fa-tiktok text-dark me-1"></i> TikTok video detected';
+                        } else if (url.includes('vimeo.com')) {
+                            platformInfo.innerHTML = '<i class="fab fa-vimeo-v text-info me-1"></i> Vimeo video detected';
+                        } else if (url.includes('dailymotion.com') || url.includes('dai.ly')) {
+                            platformInfo.innerHTML = '<i class="fas fa-video text-primary me-1"></i> Dailymotion video detected';
+                        } else {
+                            platformInfo.innerHTML = '<i class="fas fa-question-circle text-muted me-1"></i> Unknown platform';
+                        }
                     }
                 } else {
                     platformInfo.innerHTML = '<i class="fas fa-info-circle me-1"></i> Paste a URL to detect the platform';
