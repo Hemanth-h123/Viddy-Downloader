@@ -20,7 +20,7 @@
                     <form method="POST" action="{{ url_for('download') }}" class="mb-4">
                         {{ form.hidden_tag() }}
                         <div class="input-bar mb-3">
-                            {{ form.url(class="form-control", placeholder="https://www.youtube.com/watch?v=...") }}
+                            {{ form.url(class="form-control", placeholder="Paste a video URL here...") }}
                             <button type="submit" class="btn btn-gradient">
                                 <i class="fas fa-play me-2"></i> Get Video
                             </button>
@@ -111,7 +111,7 @@
                     </div>
                     
                     <div class="input-bar mb-3">
-                        <input type="text" class="form-control" placeholder="https://www.youtube.com/watch?v=..." disabled>
+                        <input type="text" class="form-control" placeholder="Paste a video URL here..." disabled>
                         <button type="button" class="btn btn-gradient" disabled>
                             <i class="fas fa-play me-2"></i> Get Video
                         </button>
@@ -122,12 +122,6 @@
                     <div class="card-body">
                         <h5 class="card-title">Supported Platforms</h5>
                         <div class="row text-center">
-                            {% if not config.SUSPEND_YOUTUBE %}
-                            <div class="col-4 col-md-2 mb-3">
-                                <i class="fab fa-youtube fa-2x text-danger"></i>
-                                <p class="mt-2">YouTube</p>
-                            </div>
-                            {% endif %}
                             <div class="col-4 col-md-2 mb-3">
                                 <i class="fab fa-facebook fa-2x text-primary"></i>
                                 <p class="mt-2">Facebook</p>
@@ -160,7 +154,7 @@
                             <div class="col-md-6">
                                 <h6><i class="fas fa-video me-1"></i> Videos</h6>
                                 <ul class="mb-3">
-                                    <li>Copy the video URL from YouTube, Facebook, TikTok, etc.</li>
+                                    <li>Copy the video URL from Facebook, TikTok, etc.</li>
                                     <li>Paste the URL into the input box above.</li>
                                     <li>Choose the desired quality (free users up to 720p).</li>
                                     <li>Click <strong>Get Video</strong> to start the download.</li>
@@ -184,7 +178,7 @@
                         <div class="feature-card">
                             <span class="feature-icon"><i class="fas fa-share-nodes"></i></span>
                             <div class="feature-title">Social Media Downloader</div>
-                            <div class="feature-text">Works with YouTube, Facebook, Instagram, Twitter, TikTok, and more.</div>
+                            <div class="feature-text">Works with Facebook, Instagram, Twitter, TikTok, and more.</div>
                         </div>
                         <div class="feature-card">
                             <span class="feature-icon"><i class="fas fa-mouse-pointer"></i></span>
@@ -243,30 +237,20 @@
                 const url = this.value.trim();
                 if (url) {
                     // Simple platform detection based on URL
-                    let isYoutube = false;
-                    {% if not config.SUSPEND_YOUTUBE %}
-                    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                        platformInfo.innerHTML = '<i class="fab fa-youtube text-danger me-1"></i> YouTube video detected';
-                        isYoutube = true;
-                    }
-                    {% endif %}
-
-                    if (!isYoutube) {
-                        if (url.includes('facebook.com') || url.includes('fb.com')) {
-                            platformInfo.innerHTML = '<i class="fab fa-facebook text-primary me-1"></i> Facebook video detected';
-                        } else if (url.includes('instagram.com')) {
-                            platformInfo.innerHTML = '<i class="fab fa-instagram text-danger me-1"></i> Instagram video detected';
-                        } else if (url.includes('twitter.com') || url.includes('x.com')) {
-                            platformInfo.innerHTML = '<i class="fab fa-twitter text-info me-1"></i> Twitter video detected';
-                        } else if (url.includes('tiktok.com')) {
-                            platformInfo.innerHTML = '<i class="fab fa-tiktok text-dark me-1"></i> TikTok video detected';
-                        } else if (url.includes('vimeo.com')) {
-                            platformInfo.innerHTML = '<i class="fab fa-vimeo-v text-info me-1"></i> Vimeo video detected';
-                        } else if (url.includes('dailymotion.com') || url.includes('dai.ly')) {
-                            platformInfo.innerHTML = '<i class="fas fa-video text-primary me-1"></i> Dailymotion video detected';
-                        } else {
-                            platformInfo.innerHTML = '<i class="fas fa-question-circle text-muted me-1"></i> Unknown platform';
-                        }
+                    if (url.includes('facebook.com') || url.includes('fb.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-facebook text-primary me-1"></i> Facebook video detected';
+                    } else if (url.includes('instagram.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-instagram text-danger me-1"></i> Instagram video detected';
+                    } else if (url.includes('twitter.com') || url.includes('x.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-twitter text-info me-1"></i> Twitter video detected';
+                    } else if (url.includes('tiktok.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-tiktok text-dark me-1"></i> TikTok video detected';
+                    } else if (url.includes('vimeo.com')) {
+                        platformInfo.innerHTML = '<i class="fab fa-vimeo-v text-info me-1"></i> Vimeo video detected';
+                    } else if (url.includes('dailymotion.com') || url.includes('dai.ly')) {
+                        platformInfo.innerHTML = '<i class="fas fa-video text-primary me-1"></i> Dailymotion video detected';
+                    } else {
+                        platformInfo.innerHTML = '<i class="fas fa-question-circle text-muted me-1"></i> Unknown platform';
                     }
                 } else {
                     platformInfo.innerHTML = '<i class="fas fa-info-circle me-1"></i> Paste a URL to detect the platform';
