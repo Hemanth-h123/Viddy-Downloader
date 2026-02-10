@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 
+{% block extra_head %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-358HH88QBM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-358HH88QBM');
+</script>
+{% endblock %}
+
 {% block title %}Settings - Viddy Downloader{% endblock %}
 
 {% block body_class %}settings-page{% endblock %}
