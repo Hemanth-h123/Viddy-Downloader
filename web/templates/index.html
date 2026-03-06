@@ -44,107 +44,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     Paste a video link below to get download options for MP4 and MP3.
                 </p>
                 
-                {% if current_user.is_authenticated %}
-                    <form method="POST" action="{{ url_for('download') }}" class="mb-4">
-                        {{ form.hidden_tag() }}
-                        <div class="input-bar mb-3">
-                            {{ form.url(class="form-control", placeholder="Paste a video URL here...") }}
-                            <button type="submit" class="btn btn-gradient">
-                                <i class="fas fa-play me-2"></i> Get Video
-                            </button>
-                        </div>
-                        {% if form.url.errors %}
-                            <div class="text-danger">
-                                {% for error in form.url.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="{{ form.quality.id }}" class="form-label">Quality:</label>
-                                    {{ form.quality(class="form-select") }}
-                                </div>
-                            </div>
-                            <div class="col-md-6 d-flex align-items-center">
-                                <div id="platform-info" class="text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Paste a URL to detect the platform
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    
-                    <!-- Premium Features Info -->
-                    <div class="alert alert-info mt-3">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <i class="fas fa-crown me-2"></i>
-                                <span>Premium Features Available</span>
-                            </div>
-                        </div>
-                        <small class="text-muted mt-2 d-block"><i class="fas fa-film me-1"></i> Video Quality: {% if plan == 'free' %}Up to 720p{% else %}Best Available{% endif %}</small>
-                        <small class="text-muted mt-1 d-block">Maximum file size: {{ max_file_size_mb }}MB</small>
-                        
-                        <!-- Daily Limits Info -->
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <div>
-                                <small class="text-muted"><i class="fas fa-video me-1"></i> Daily video limit: 
-                                {% if daily_limit is string and daily_limit|lower == 'unlimited' %}
-                                    Unlimited
-                                {% else %}
-                                    {{ daily_limit }}
-                                {% endif %}
-                                </small>
-                            </div>
-                            <div>
-                                <small class="text-muted">Remaining: 
-                                {% if daily_limit is string and daily_limit|lower == 'unlimited' %}
-                                    Unlimited
-                                {% else %}
-                                    <strong>{{ downloads_today }}</strong> of {{ daily_limit }}
-                                {% endif %}
-                                </small>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mt-1">
-                            <div>
-                                <small class="text-muted"><i class="fas fa-image me-1"></i> Daily image limit: 
-                                {% if images_limit is string and images_limit|lower == 'unlimited' %}
-                                    Unlimited
-                                {% else %}
-                                    {{ images_limit }}
-                                {% endif %}
-                                </small>
-                            </div>
-                            <div>
-                                <small class="text-muted">Remaining: 
-                                {% if images_limit is string and images_limit|lower == 'unlimited' %}
-                                    Unlimited
-                                {% else %}
-                                    <strong>{{ images_left }}</strong> of {{ images_limit }}
-                                {% endif %}
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <a href="{{ url_for('login') }}" class="alert-link">Log in</a> or 
-                        <a href="{{ url_for('register') }}" class="alert-link">register</a> to download videos.
-                    </div>
-                    
+                <form method="POST" action="{{ url_for('download') }}" class="mb-4">
+                    {{ form.hidden_tag() }}
                     <div class="input-bar mb-3">
-                        <input type="text" class="form-control" placeholder="Paste a video URL here..." disabled>
-                        <button type="button" class="btn btn-gradient" disabled>
+                        {{ form.url(class="form-control", placeholder="Paste a video URL here...") }}
+                        <button type="submit" class="btn btn-gradient">
                             <i class="fas fa-play me-2"></i> Get Video
                         </button>
                     </div>
-                {% endif %}
+                    {% if form.url.errors %}
+                        <div class="text-danger">
+                            {% for error in form.url.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.quality.id }}" class="form-label">Quality:</label>
+                                {{ form.quality(class="form-select") }}
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div id="platform-info" class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Paste a URL to detect the platform
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 
                 <div class="card platforms-card mt-4">
                     <div class="card-body">
@@ -184,7 +114,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <ul class="mb-3">
                                     <li>Copy the video URL from Facebook, TikTok, etc.</li>
                                     <li>Paste the URL into the input box above.</li>
-                                    <li>Choose the desired quality (free users up to 720p).</li>
+                                    <li>Choose the desired quality.</li>
                                     <li>Click <strong>Get Video</strong> to start the download.</li>
                                 </ul>
                             </div>
@@ -194,7 +124,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     <li>Copy the image or post URL (e.g., Instagram post, Pinterest pin).</li>
                                     <li>Paste the URL into the input box above.</li>
                                     <li>Click <strong>Get Video</strong> to fetch and download the image.</li>
-                                    <li>Free users can download up to <strong>10 images/day</strong>.</li>
                                 </ul>
                             </div>
                         </div>
@@ -222,34 +151,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
             </div>
         </div>
-        
-        {% if not current_user.is_authenticated or not current_user.is_premium() %}
-        <div class="card premium-highlight shadow-lg mt-4">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h3 class="mb-3"><i class="fas fa-crown text-warning me-2"></i> Upgrade to Premium</h3>
-                        <p class="lead">Get more features and higher limits. Ad-free with Premium Plus.</p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i> Unlimited downloads</li>
-                            <li><i class="fas fa-check text-success me-2"></i> Ad-free with Premium Plus</li>
-                            <li><i class="fas fa-check text-success me-2"></i> HD quality downloads</li>
-                            <li><i class="fas fa-check text-success me-2"></i> Priority support</li>
-                        </ul>
-                        <a href="{{ url_for('premium') }}" class="btn btn-warning">
-                            <i class="fas fa-crown me-2"></i> Upgrade Now
-                        </a>
-                    </div>
-                    <div class="col-md-4 text-center d-flex align-items-center justify-content-center">
-                        <div>
-                            <i class="fas fa-crown fa-5x text-warning mb-3"></i>
-                            <h4>Starting at $4.99/month</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
