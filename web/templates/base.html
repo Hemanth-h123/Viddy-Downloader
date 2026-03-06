@@ -15,10 +15,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     
     <!-- Google AdSense -->
-    {% if config.MONETIZATION_ENABLED and config.ADSENSE_CLIENT_ID %}
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config.ADSENSE_CLIENT_ID }}"
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3305057902615100"
      crossorigin="anonymous"></script>
-    {% endif %}
 
     {% block extra_css %}{% endblock %}
     {% block extra_head %}{% endblock %}
