@@ -15,8 +15,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3305057902615100"
+    {% if config.MONETIZATION_ENABLED and config.ADSENSE_CLIENT_ID %}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config.ADSENSE_CLIENT_ID }}"
      crossorigin="anonymous"></script>
+    {% endif %}
 
     {% block extra_css %}{% endblock %}
     {% block extra_head %}{% endblock %}
@@ -39,18 +41,6 @@
                             <i class="fas fa-home me-1"></i> Home
                         </a>
                     </li>
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('downloads') }}">
-                            <i class="fas fa-list me-1"></i> My Downloads
-                        </a>
-                    </li>
-                    {% endif %}
-                    <!--<li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('blog.blog_index') }}">
-                            <i class="fas fa-blog me-1"></i> Blog
-                        </a>
-                    </li>-->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('feedback.feedback') }}">
                             <i class="fas fa-comment me-1"></i> Feedback
@@ -61,53 +51,6 @@
                             <i class="fas fa-info-circle me-1"></i> About
                         </a>
                     </li>
-                </ul>
-                <ul class="navbar-nav">
-                    {% if current_user.is_authenticated %}
-                        {% if not current_user.is_premium() %}
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-warning btn-sm text-dark me-2" href="{{ url_for('premium') }}">
-                                <i class="fas fa-crown me-1"></i> Upgrade to Premium
-                            </a>
-                        </li>
-                        {% endif %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-1"></i> {{ current_user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item" href="{{ url_for('settings') }}">
-                                        <i class="fas fa-cog me-1"></i> Settings
-                                    </a>
-                                </li>
-                                {% if current_user.is_admin %}
-                                <li>
-                                    <a class="dropdown-item" href="{{ url_for('admin.admin_dashboard') }}">
-                                        <i class="fas fa-user-shield me-1"></i> Admin Dashboard
-                                    </a>
-                                </li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ url_for('logout') }}">
-                                        <i class="fas fa-sign-out-alt me-1"></i> Logout
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i> Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">
-                                <i class="fas fa-user-plus me-1"></i> Register
-                            </a>
-                        </li>
-                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -124,8 +67,6 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-
-        {% include 'partials/ads_banner.html' %}
 
         {% block content %}{% endblock %}
     </div>
