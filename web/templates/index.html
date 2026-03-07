@@ -104,6 +104,78 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                 </div>
 
+                <!-- Premium Plans Section -->
+                <div class="row mt-5 mb-4">
+                    <div class="col-12 text-center mb-4">
+                        <h2 class="section-title">Upgrade to Premium</h2>
+                        <p class="text-muted">Unlock more features and higher download limits</p>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm plan-card {% if plan == 'free' %}border-primary{% endif %}">
+                            <div class="card-body text-center d-flex flex-column">
+                                <h5 class="card-title">Free</h5>
+                                <h3 class="card-price mb-4">$0 <small class="text-muted">/ month</small></h3>
+                                <ul class="list-unstyled mb-4 text-start flex-grow-1">
+                                    <li><i class="fas fa-check text-success me-2"></i> 5 videos / day</li>
+                                    <li><i class="fas fa-check text-success me-2"></i> 10 images / day</li>
+                                    <li><i class="fas fa-check text-success me-2"></i> Up to 720p quality</li>
+                                    <li><i class="fas fa-times text-danger me-2"></i> Ad-free experience</li>
+                                </ul>
+                                {% if plan == 'free' %}
+                                    <button class="btn btn-outline-primary w-100" disabled>Current Plan</button>
+                                {% else %}
+                                    <a href="{{ url_for('index') }}" class="btn btn-outline-primary w-100">Select Plan</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm plan-card featured {% if plan == 'basic' %}border-primary{% endif %}">
+                            <div class="card-body text-center d-flex flex-column">
+                                <div class="badge bg-primary mb-2">Most Popular</div>
+                                <h5 class="card-title">Basic</h5>
+                                <h3 class="card-price mb-4">$4.99 <small class="text-muted">/ month</small></h3>
+                                <ul class="list-unstyled mb-4 text-start flex-grow-1">
+                                    <li><i class="fas fa-check text-success me-2"></i> 30 videos / day</li>
+                                    <li><i class="fas fa-check text-success me-2"></i> Unlimited images</li>
+                                    <li><i class="fas fa-check text-success me-2"></i> HD quality (1080p)</li>
+                                    <li><i class="fas fa-times text-danger me-2"></i> Ad-free experience</li>
+                                </ul>
+                                {% if plan == 'basic' %}
+                                    <button class="btn btn-primary w-100" disabled>Current Plan</button>
+                                {% else %}
+                                    <form action="{{ url_for('subscribe', plan_id='basic') }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-primary w-100">Upgrade Now</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm plan-card {% if plan == 'pro' %}border-primary{% endif %}">
+                            <div class="card-body text-center d-flex flex-column">
+                                <h5 class="card-title">Pro</h5>
+                                <h3 class="card-price mb-4">$9.99 <small class="text-muted">/ month</small></h3>
+                                <ul class="list-unstyled mb-4 text-start flex-grow-1">
+                                    <li><i class="fas fa-check text-success me-2"></i> Unlimited videos</li>
+                                    <li><i class="fas fa-check text-success me-2"></i> Unlimited images</li>
+                                    <li><i class="fas fa-check text-success me-2"></i> All qualities (4K/8K)</li>
+                                    <li><i class="fas fa-check text-success me-2"></i> 100% Ad-free</li>
+                                </ul>
+                                {% if plan == 'pro' %}
+                                    <button class="btn btn-outline-primary w-100" disabled>Current Plan</button>
+                                {% else %}
+                                    <form action="{{ url_for('subscribe', plan_id='pro') }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-outline-primary w-100">Go Pro</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- How to Download Instructions -->
                 <div class="card mt-4">
                     <div class="card-body">
