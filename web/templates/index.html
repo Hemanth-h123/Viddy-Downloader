@@ -215,7 +215,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     <button class="btn btn-primary w-100" disabled>Current Plan</button>
                                 {% else %}
                                     <form action="{{ url_for('subscribe', plan_id='basic') }}" method="POST">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                         <button type="submit" class="btn btn-primary w-100">Upgrade Now</button>
                                     </form>
                                 {% endif %}
@@ -237,7 +237,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     <button class="btn btn-outline-primary w-100" disabled>Current Plan</button>
                                 {% else %}
                                     <form action="{{ url_for('subscribe', plan_id='pro') }}" method="POST">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                         <button type="submit" class="btn btn-outline-primary w-100">Go Pro</button>
                                     </form>
                                 {% endif %}
