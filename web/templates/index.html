@@ -78,56 +78,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </form>
                     
                     <!-- Premium Features Info -->
-                    <div class="alert alert-info mt-3">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <i class="fas fa-crown me-2"></i>
-                                <span>Premium Features Available</span>
+                    <div class="card bg-light border-0 mt-3 mb-4">
+                        <div class="card-body py-3">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-crown text-warning me-2"></i>
+                                    Current Plan: <span class="badge bg-primary ms-1">{{ plan|capitalize }}</span>
+                                </h6>
+                                <a href="{{ url_for('premium') }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-arrow-up me-1"></i> Upgrade
+                                </a>
                             </div>
-                        </div>
-                        <small class="text-muted mt-2 d-block"><i class="fas fa-film me-1"></i> Video Quality: {% if plan == 'free' %}Up to 720p{% else %}Best Available{% endif %}</small>
-                        <small class="text-muted mt-1 d-block">Maximum file size: {{ max_file_size_mb }}MB</small>
-                        
-                        <!-- Daily Limits Info -->
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <div>
-                                <small class="text-muted"><i class="fas fa-video me-1"></i> Daily video limit: 
-                                {% if daily_limit is string and daily_limit|lower == 'unlimited' %}
-                                    Unlimited
-                                {% else %}
-                                    {{ daily_limit }}
-                                {% endif %}
-                                </small>
-                            </div>
-                            <div>
-                                <small class="text-muted">Remaining: 
-                                {% if daily_limit is string and daily_limit|lower == 'unlimited' %}
-                                    Unlimited
-                                {% else %}
-                                    <strong>{{ downloads_today }}</strong> of {{ daily_limit }}
-                                {% endif %}
-                                </small>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mt-1">
-                            <div>
-                                <small class="text-muted"><i class="fas fa-image me-1"></i> Daily image limit: 
-                                {% if images_limit is string and images_limit|lower == 'unlimited' %}
-                                    Unlimited
-                                {% else %}
-                                    {{ images_limit }}
-                                {% endif %}
-                                </small>
-                            </div>
-                            <div>
-                                <small class="text-muted">Remaining: 
-                                {% if images_limit is string and images_limit|lower == 'unlimited' %}
-                                    Unlimited
-                                {% else %}
-                                    <strong>{{ images_left }}</strong> of {{ images_limit }}
-                                {% endif %}
-                                </small>
+                            
+                            <div class="row g-2 mt-2">
+                                <div class="col-sm-6">
+                                    <small class="text-muted d-block"><i class="fas fa-video me-1"></i> Videos: <strong>{{ downloads_today }}</strong> / {{ daily_limit }}</small>
+                                    <small class="text-muted d-block"><i class="fas fa-image me-1"></i> Images: <strong>{{ images_left }}</strong> / {{ images_limit }}</small>
+                                </div>
+                                <div class="col-sm-6">
+                                    <small class="text-muted d-block"><i class="fas fa-film me-1"></i> Quality: {% if plan == 'free' %}720p{% else %}Best{% endif %}</small>
+                                    <small class="text-muted d-block"><i class="fas fa-hdd me-1"></i> Max Size: {{ max_file_size_mb }}MB</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,7 +165,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 {% if plan == 'free' %}
                                     <button class="btn btn-outline-primary w-100" disabled>Current Plan</button>
                                 {% else %}
-                                    <a href="{{ url_for('index') }}" class="btn btn-outline-primary w-100">Select Plan</a>
+                                    <a href="{{ url_for('premium') }}" class="btn btn-outline-primary w-100">Select Plan</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -214,10 +185,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 {% if plan == 'basic' %}
                                     <button class="btn btn-primary w-100" disabled>Current Plan</button>
                                 {% else %}
-                                    <form action="{{ url_for('subscribe', plan_id='basic') }}" method="POST">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                        <button type="submit" class="btn btn-primary w-100">Upgrade Now</button>
-                                    </form>
+                                    <a href="{{ url_for('premium') }}" class="btn btn-primary w-100">Upgrade Now</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -236,10 +204,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 {% if plan == 'pro' %}
                                     <button class="btn btn-outline-primary w-100" disabled>Current Plan</button>
                                 {% else %}
-                                    <form action="{{ url_for('subscribe', plan_id='pro') }}" method="POST">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                        <button type="submit" class="btn btn-outline-primary w-100">Go Pro</button>
-                                    </form>
+                                    <a href="{{ url_for('premium') }}" class="btn btn-outline-primary w-100">Go Pro</a>
                                 {% endif %}
                             </div>
                         </div>
