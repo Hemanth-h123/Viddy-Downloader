@@ -49,7 +49,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         {{ form.hidden_tag() }}
                         <div class="input-bar mb-3">
                             {{ form.url(class="form-control", placeholder="Paste a video URL here...") }}
-                            <button type="submit" class="btn btn-gradient">
+                            <button type="submit" class="btn btn-gradient" aria-label="Get Video Download Options">
                                 <i class="fas fa-play me-2"></i> Get Video
                             </button>
                         </div>
@@ -110,8 +110,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     
                     <div class="input-bar mb-3">
-                        <input type="text" class="form-control" placeholder="Paste a video URL here..." disabled>
-                        <button type="button" class="btn btn-gradient" disabled>
+                        <input type="text" class="form-control" placeholder="Paste a video URL here..." disabled aria-label="Paste video URL here">
+                        <button type="button" class="btn btn-gradient" disabled aria-label="Get Video Download Options (Log in to enable)">
                             <i class="fas fa-play me-2"></i> Get Video
                         </button>
                     </div>
@@ -119,7 +119,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 
                 <div class="card platforms-card mt-4">
                     <div class="card-body">
-                        <h5 class="card-title">Supported Platforms</h5>
+                        <h2 class="h5 card-title">Supported Platforms</h2>
                         <div class="row text-center">
                             <div class="col-4 col-md-2 mb-3">
                                 <i class="fab fa-facebook fa-2x text-primary"></i>
@@ -154,8 +154,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm plan-card {% if plan == 'free' %}border-primary{% endif %}">
                             <div class="card-body text-center d-flex flex-column">
-                                <h5 class="card-title">Free</h5>
-                                <h3 class="card-price mb-4">$0 <small class="text-muted">/ month</small></h3>
+                                <h3 class="h5 card-title">Free</h3>
+                                <p class="card-price mb-4 h3">$0 <small class="text-muted">/ month</small></p>
                                 <ul class="list-unstyled mb-4 text-start flex-grow-1">
                                     <li><i class="fas fa-check text-success me-2"></i> 5 videos / day</li>
                                     <li><i class="fas fa-check text-success me-2"></i> 10 images / day</li>
@@ -174,8 +174,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <div class="card h-100 shadow-sm plan-card featured {% if plan == 'basic' %}border-primary{% endif %}">
                             <div class="card-body text-center d-flex flex-column">
                                 <div class="badge bg-primary mb-2">Most Popular</div>
-                                <h5 class="card-title">Basic</h5>
-                                <h3 class="card-price mb-4">$4.99 <small class="text-muted">/ month</small></h3>
+                                <h3 class="h5 card-title">Basic</h3>
+                                <p class="card-price mb-4 h3">$4.99 <small class="text-muted">/ month</small></p>
                                 <ul class="list-unstyled mb-4 text-start flex-grow-1">
                                     <li><i class="fas fa-check text-success me-2"></i> 30 videos / day</li>
                                     <li><i class="fas fa-check text-success me-2"></i> Unlimited images</li>
@@ -193,8 +193,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm plan-card {% if plan == 'pro' %}border-primary{% endif %}">
                             <div class="card-body text-center d-flex flex-column">
-                                <h5 class="card-title">Pro</h5>
-                                <h3 class="card-price mb-4">$9.99 <small class="text-muted">/ month</small></h3>
+                                <h3 class="h5 card-title">Pro</h3>
+                                <p class="card-price mb-4 h3">$9.99 <small class="text-muted">/ month</small></p>
                                 <ul class="list-unstyled mb-4 text-start flex-grow-1">
                                     <li><i class="fas fa-check text-success me-2"></i> Unlimited videos</li>
                                     <li><i class="fas fa-check text-success me-2"></i> Unlimited images</li>
@@ -214,10 +214,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <!-- How to Download Instructions -->
                 <div class="card mt-4">
                     <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-question-circle me-2"></i>How to Download</h5>
+                        <h2 class="h5 card-title"><i class="fas fa-question-circle me-2"></i>How to Download</h2>
                         <div class="row">
                             <div class="col-md-6">
-                                <h6><i class="fas fa-video me-1"></i> Videos</h6>
+                                <h3 class="h6"><i class="fas fa-video me-1"></i> Videos</h3>
                                 <ul class="mb-3">
                                     <li>Copy the video URL from Facebook, TikTok, etc.</li>
                                     <li>Paste the URL into the input box above.</li>
@@ -226,7 +226,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 </ul>
                             </div>
                             <div class="col-md-6">
-                                <h6><i class="fas fa-image me-1"></i> Images</h6>
+                                <h3 class="h6"><i class="fas fa-image me-1"></i> Images</h3>
                                 <ul>
                                     <li>Copy the image or post URL (e.g., Instagram post, Pinterest pin).</li>
                                     <li>Paste the URL into the input box above.</li>
@@ -241,17 +241,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="features-grid">
                         <div class="feature-card">
                             <span class="feature-icon"><i class="fas fa-share-nodes"></i></span>
-                            <div class="feature-title">Social Media Downloader</div>
+                            <h2 class="h5 feature-title">Social Media Downloader</h2>
                             <div class="feature-text">Works with Facebook, Instagram, Twitter, TikTok, and more.</div>
                         </div>
                         <div class="feature-card">
                             <span class="feature-icon"><i class="fas fa-mouse-pointer"></i></span>
-                            <div class="feature-title">One Click Download</div>
+                            <h2 class="h5 feature-title">One Click Download</h2>
                             <div class="feature-text">Paste the link and hit Download — it’s that simple.</div>
                         </div>
                         <div class="feature-card">
                             <span class="feature-icon"><i class="fas fa-video"></i></span>
-                            <div class="feature-title">HD Video Downloader</div>
+                            <h2 class="h5 feature-title">HD Video Downloader</h2>
                             <div class="feature-text">Choose quality including HD, SD, and audio-only formats.</div>
                         </div>
                     </div>
