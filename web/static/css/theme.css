@@ -68,7 +68,7 @@ body.home-page {
 .btn-gradient {
   background: var(--primary-color);
   border: none;
-  color: rgb(0, 0, 0);
+  color: #ffffff;
   height: 48px;
   border-radius: 8px;
   font-weight: 600;
