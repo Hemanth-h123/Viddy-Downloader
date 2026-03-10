@@ -12,6 +12,29 @@
   --shadow-soft: 0 10px 20px rgba(2, 6, 23, 0.4);
 }
 
+/* Fix contrast issues */
+.text-muted {
+  color: #556677 !important; /* Darker muted text for better contrast on light backgrounds */
+}
+
+.home-page .text-muted {
+  color: var(--text-300) !important; /* Keep original muted text for dark homepage background */
+}
+
+.plan-card .btn-outline-primary {
+  border-color: #4aa8ff;
+  color: #4aa8ff;
+}
+
+.plan-card .btn-outline-primary:hover {
+  background-color: #4aa8ff;
+  color: #ffffff;
+}
+
+footer .text-muted {
+  color: #4b5563 !important; /* Darker text for footer on light background */
+}
+
 /* Homepage specific styling inspired by the provided design */
 body.home-page {
   background: var(--bg-800);
