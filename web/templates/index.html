@@ -47,9 +47,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 {% if current_user.is_authenticated %}
                     <form method="POST" action="{{ url_for('download') }}" class="mb-4">
                         {{ form.hidden_tag() }}
+                        {{ form.content_type(id="content_type_hidden", type="hidden") }}
+                        
+                        <!-- Video/Image Toggle -->
+                        <div class="d-flex justify-content-center mb-3">
+                            <div class="btn-group content-toggle" role="group" aria-label="Download Type">
+                                <button type="button" class="btn btn-primary active" id="toggle-video" onclick="setDownloadType('video')">
+                                    <i class="fas fa-video me-2"></i>Videos
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" id="toggle-image" onclick="setDownloadType('image')">
+                                    <i class="fas fa-image me-2"></i>Images
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="input-bar mb-3">
-                            {{ form.url(class="form-control", placeholder="Paste a video URL here...") }}
-                            <button type="submit" class="btn btn-gradient" aria-label="Get Video Download Options">
+                            {{ form.url(class="form-control", placeholder="Paste a URL here...") }}
+                            <button type="submit" class="btn btn-gradient" id="download-btn" aria-label="Get Video Download Options">
                                 <i class="fas fa-play me-2"></i> Get Video
                             </button>
                         </div>
@@ -264,29 +278,67 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 {% block extra_js %}
 <script>
+    function setDownloadType(type) {
+        const hiddenInput = document.getElementById('content_type_hidden');
+        const videoBtn = document.getElementById('toggle-video');
+        const imageBtn = document.getElementById('toggle-image');
+        const downloadBtn = document.getElementById('download-btn');
+        const urlInput = document.getElementById('{{ form.url.id }}');
+        
+        hiddenInput.value = type;
+        
+        if (type === 'video') {
+            videoBtn.classList.add('btn-primary', 'active');
+            videoBtn.classList.remove('btn-outline-primary');
+            imageBtn.classList.add('btn-outline-primary');
+            imageBtn.classList.remove('btn-primary', 'active');
+            downloadBtn.innerHTML = '<i class="fas fa-play me-2"></i> Get Video';
+            if (urlInput) urlInput.placeholder = "Paste a video URL here...";
+        } else {
+            imageBtn.classList.add('btn-primary', 'active');
+            imageBtn.classList.remove('btn-outline-primary');
+            videoBtn.classList.add('btn-outline-primary');
+            videoBtn.classList.remove('btn-primary', 'active');
+            downloadBtn.innerHTML = '<i class="fas fa-image me-2"></i> Get Image';
+            if (urlInput) urlInput.placeholder = "Paste an image URL here...";
+        }
+        
+        // Trigger platform detection update
+        if (urlInput) {
+            const event = new Event('input', { bubbles: true });
+            urlInput.dispatchEvent(event);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const urlInput = document.getElementById('{{ form.url.id }}');
         const platformInfo = document.getElementById('platform-info');
+        const hiddenInput = document.getElementById('content_type_hidden');
         
         if (urlInput && platformInfo) {
             urlInput.addEventListener('input', function() {
                 const url = this.value.trim();
+                const type = hiddenInput.value;
+                const typeText = type === 'video' ? 'video' : 'image';
+                
                 if (url) {
                     // Simple platform detection based on URL
                     if (url.includes('facebook.com') || url.includes('fb.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-facebook text-primary me-1"></i> Facebook video detected';
+                        platformInfo.innerHTML = `<i class="fab fa-facebook text-primary me-1"></i> Facebook ${typeText} detected`;
                     } else if (url.includes('instagram.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-instagram text-danger me-1"></i> Instagram video detected';
+                        platformInfo.innerHTML = `<i class="fab fa-instagram text-danger me-1"></i> Instagram ${typeText} detected`;
                     } else if (url.includes('twitter.com') || url.includes('x.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-twitter text-info me-1"></i> Twitter video detected';
+                        platformInfo.innerHTML = `<i class="fab fa-twitter text-info me-1"></i> Twitter ${typeText} detected`;
                     } else if (url.includes('tiktok.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-tiktok text-dark me-1"></i> TikTok video detected';
+                        platformInfo.innerHTML = `<i class="fab fa-tiktok text-dark me-1"></i> TikTok ${typeText} detected`;
                     } else if (url.includes('vimeo.com')) {
-                        platformInfo.innerHTML = '<i class="fab fa-vimeo-v text-info me-1"></i> Vimeo video detected';
+                        platformInfo.innerHTML = `<i class="fab fa-vimeo-v text-info me-1"></i> Vimeo ${typeText} detected`;
+                    } else if (url.includes('linkedin.com')) {
+                        platformInfo.innerHTML = `<i class="fab fa-linkedin text-primary me-1"></i> LinkedIn ${typeText} detected`;
                     } else if (url.includes('dailymotion.com') || url.includes('dai.ly')) {
-                        platformInfo.innerHTML = '<i class="fas fa-video text-primary me-1"></i> Dailymotion video detected';
+                        platformInfo.innerHTML = `<i class="fas fa-video text-primary me-1"></i> Dailymotion ${typeText} detected`;
                     } else {
-                        platformInfo.innerHTML = '<i class="fas fa-question-circle text-muted me-1"></i> Unknown platform';
+                        platformInfo.innerHTML = `<i class="fas fa-question-circle text-muted me-1"></i> Unknown platform`;
                     }
                 } else {
                     platformInfo.innerHTML = '<i class="fas fa-info-circle me-1"></i> Paste a URL to detect the platform';
