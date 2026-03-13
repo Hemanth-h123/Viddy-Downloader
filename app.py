@@ -235,8 +235,10 @@ def download():
     """Handle video download request"""
     form = DownloadForm()
     if form.validate_on_submit():
+        # Get URL, quality, and content_type from form
         url = form.url.data
         quality = form.quality.data
+        content_type = form.content_type.data or 'video'
         
         # Identify platform
         platform = identify_platform(url)
@@ -247,9 +249,6 @@ def download():
         if platform.lower() == 'youtube' and os.environ.get('SUSPEND_YOUTUBE', '').lower() == 'true':
             flash('YouTube downloads are temporarily suspended. Please try again later.', 'error')
             return redirect(url_for('index'))
-        
-        # Determine content type (image or video)
-        content_type = 'image' if any(x in url.lower() for x in ['pinterest', 'instagram', '/p/', '/photo/']) else 'video'
         
         # Check if user can download (based on subscription and content type)
         if not monetization_manager.can_download(current_user, content_type):
@@ -356,7 +355,8 @@ def download():
                             quality=dl.quality,
                             progress_callback=progress_cb,
                             status_callback=status_cb,
-                            extra_opts=extra_opts
+                            extra_opts=extra_opts,
+                            media_type=dl.content_type or 'video'
                         )
                                 
                                 # If download succeeded, break the retry loop
