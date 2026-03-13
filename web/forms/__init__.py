@@ -54,8 +54,8 @@ class DownloadForm(FlaskForm):
         ('360p', '360p'),
         ('Audio Only', 'Audio Only')
     ])
+    content_type = StringField('Content Type', default='video')
     submit = SubmitField('Download')
-
 class SettingsForm(FlaskForm):
     """User settings form"""
     username = StringField('User Name', validators=[Length(min=3, max=50)])
