@@ -21,7 +21,7 @@ class BaseDownloader(ABC):
         self.platform_name = "Base"
     
     @abstractmethod
-    def download(self, url, save_path, quality="Best", progress_callback=None, status_callback=None, cancel_check=None, extra_opts=None):
+    def download(self, url, save_path, quality="Best", progress_callback=None, status_callback=None, cancel_check=None, extra_opts=None, media_type="video"):
         """Download video or image from the platform
         
         Args:
@@ -32,6 +32,7 @@ class BaseDownloader(ABC):
             status_callback (callable): Function to call with status updates
             cancel_check (callable): Function to check if download should be cancelled
             extra_opts (dict): Extra options to pass to the downloader
+            media_type (str): The type of media to download (video or image)
             
         Returns:
             str: Path to the downloaded file, or None if download failed
