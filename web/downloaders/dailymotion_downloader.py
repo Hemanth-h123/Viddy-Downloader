@@ -1,7 +1,7 @@
 import os
 import time
 import re
-from .base_downloader import BaseDownloader
+from web.downloaders.base_downloader import BaseDownloader
 from web.utils.ytdlp_helper import download_with_ytdlp
 
 class DailymotionDownloader(BaseDownloader):
