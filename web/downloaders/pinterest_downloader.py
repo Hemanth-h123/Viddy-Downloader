@@ -11,7 +11,7 @@ class PinterestDownloader(BaseDownloader):
         super().__init__()
         self.platform = "Pinterest"
     
-    def download(self, url, save_path=None, quality="Best", progress_callback=None, status_callback=None, cancel_check=None, extra_opts=None):
+    def download(self, url, save_path, quality="Best", progress_callback=None, status_callback=None, cancel_check=None, extra_opts=None, media_type="video"):
         """Download image from Pinterest
         
         Args:
