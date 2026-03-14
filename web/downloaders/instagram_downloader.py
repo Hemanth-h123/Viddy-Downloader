@@ -1,10 +1,11 @@
 import os
+import requests
 import time
 import logging
 import platform
 import sys
 from urllib.parse import urlparse
-from .base_downloader import BaseDownloader
+from web.downloaders.base_downloader import BaseDownloader
 from web.utils.ytdlp_helper import download_with_ytdlp
 
 logger = logging.getLogger(__name__)
