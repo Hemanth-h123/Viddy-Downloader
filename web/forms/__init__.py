@@ -6,6 +6,7 @@ Forms for the web application
 """
 
 from flask_wtf import FlaskForm, RecaptchaField
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, URL, ValidationError
 
@@ -74,6 +75,9 @@ class SettingsForm(FlaskForm):
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High')
+    ])
+    cookies_file = FileField('YouTube Cookies (cookies.txt)', validators=[
+        FileAllowed(['txt'], 'Only .txt files are allowed!')
     ])
     submit = SubmitField('Save Settings')
 
