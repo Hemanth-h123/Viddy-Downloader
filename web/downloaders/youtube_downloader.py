@@ -1,3 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+YouTube Downloader - Implementation for downloading videos from YouTube
+"""
+
+import os
+import pytube
+import logging
+import tempfile
+from web.downloaders.base_downloader import BaseDownloader
+from web.utils.ytdlp_helper import download_with_ytdlp
+
+logger = logging.getLogger(__name__)
+
+class YouTubeDownloader(BaseDownloader):
+    """YouTube video downloader implementation"""
+    
+    def __init__(self):
+        """Initialize the YouTube downloader"""
+        super().__init__()
+        self.platform_name = "YouTube"
+    
     def download(self, url, save_path, quality="Best", progress_callback=None, status_callback=None, cancel_check=None, extra_opts=None, media_type="video"):
         """Download video or image from YouTube
         
@@ -14,11 +38,6 @@
         Returns:
             str: Path to the downloaded file, or None if download failed
         """
-        import os
-        import logging
-        import tempfile
-        logger = logging.getLogger(__name__)
-        
         temp_cookie_path = None
         try:
             clean_url = self._clean_url(url)
@@ -243,3 +262,17 @@
                     logger.info(f"Deleted temporary user cookies file: {temp_cookie_path}")
                 except Exception as e:
                     logger.error(f"Failed to delete temporary cookies file: {e}")
+    
+    def _clean_url(self, url):
+        """Clean and validate YouTube URL"""
+        if not url:
+            return None
+        
+        # Simple cleaning
+        url = url.strip()
+        if 'youtube.com/shorts/' in url:
+            # Convert shorts URL to standard video URL if needed
+            video_id = url.split('/shorts/')[1].split('?')[0]
+            url = f'https://www.youtube.com/watch?v={video_id}'
+        
+        return url
