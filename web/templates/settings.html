@@ -92,7 +92,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             </div>
                         </div>
                         
-                        
+                        <!-- YouTube Cookies Section -->
+                        <div class="mb-4">
+                            <h2 class="h5 mb-3">YouTube Authentication</h2>
+                            <div class="mb-3">
+                                <label for="{{ form.cookies_file.id }}" class="form-label">Upload cookies.txt</label>
+                                {{ form.cookies_file(class="form-control") }}
+                                <div class="form-text">
+                                    Upload a <code>cookies.txt</code> file (Netscape format) to download restricted YouTube videos.
+                                    {% if current_user.cookies_content %}
+                                        <span class="text-success"><i class="fas fa-check-circle"></i> Cookies already uploaded.</span>
+                                    {% endif %}
+                                </div>
+                                {% if form.cookies_file.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.cookies_file.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
                         
                         <!-- Subscription Section -->
                         <div class="mb-4">
