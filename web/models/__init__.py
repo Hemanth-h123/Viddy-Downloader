@@ -14,6 +14,7 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
+    cookies_content = db.Column(db.Text, nullable=True)  # Store cookies.txt content
     
     # Relationships
     downloads = db.relationship('Download', backref='user', lazy=True)
