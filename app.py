@@ -324,9 +324,6 @@ def download():
                                 "fragment_retries": 15,
                                 "extractor_retries": 10,
                             }
-                            # Add user specific cookies if available
-                            if dl.user and dl.user.cookies_content:
-                                extra_opts['user_cookies'] = dl.user.cookies_content
 
                         def progress_cb(pct):
                             # Ensure progress updates are committed immediately
@@ -730,17 +727,6 @@ def settings():
                 flash('Profile updated successfully.', 'success')
             else:
                 flash('Settings saved successfully.', 'success')
-                
-            # Handle cookie file upload
-            if form.cookies_file.data:
-                try:
-                    cookie_content = form.cookies_file.data.read().decode('utf-8')
-                    if cookie_content.strip():
-                        current_user.cookies_content = cookie_content
-                        db.session.commit()
-                        flash('YouTube cookies updated successfully!', 'success')
-                except Exception as e:
-                    flash(f'Failed to process cookies file: {e}', 'error')
         except Exception as e:
             db.session.rollback()
             flash(f'Failed to update profile: {e}', 'error')
