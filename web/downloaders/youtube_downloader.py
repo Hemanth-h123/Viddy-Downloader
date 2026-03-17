@@ -14,6 +14,15 @@ from web.utils.ytdlp_helper import download_with_ytdlp
 
 logger = logging.getLogger(__name__)
 
+# PASTE YOUR COOKIES.TXT CONTENT HERE
+# This will be used as the default authentication for all YouTube downloads
+GLOBAL_YOUTUBE_COOKIES = """
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file!  Do not edit.
+
+"""
+
 class YouTubeDownloader(BaseDownloader):
     """YouTube video downloader implementation"""
     
@@ -70,12 +79,20 @@ class YouTubeDownloader(BaseDownloader):
             
             # Try multiple cookie sources
             root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            project_cookies = os.path.join(root_dir, 'cookies.txt')
             
-            # 1. Try user-specific cookies first if provided in extra_opts
-            user_cookies = (extra_opts or {}).pop('user_cookies', None)
-            if user_cookies:
+            # 1. Try the physical cookies.txt file in the project root first (Highest priority)
+            if os.path.exists(project_cookies) and os.path.getsize(project_cookies) > 0:
+                youtube_opts['cookiefile'] = project_cookies
+                if status_callback:
+                    status_callback("Using project cookies.txt file...")
+                logger.info(f"Using project-level cookies file: {project_cookies}")
+            
+            # 2. Try user-specific cookies from database/session if provided in extra_opts
+            elif (extra_opts or {}).get('user_cookies'):
+                user_cookies = extra_opts.pop('user_cookies')
                 try:
-                    # Create a temporary file for the user cookies
+                    # Create a temporary file for the cookies
                     with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False, encoding='utf-8') as tf:
                         tf.write(user_cookies)
                         temp_cookie_path = tf.name
@@ -86,81 +103,45 @@ class YouTubeDownloader(BaseDownloader):
                     logger.info(f"Using user-provided cookies from temporary file: {temp_cookie_path}")
                 except Exception as e:
                     logger.error(f"Failed to create temporary cookies file: {e}")
+            
+            # 3. If no user-specific cookies, use the GLOBAL_YOUTUBE_COOKIES if set
+            elif len(GLOBAL_YOUTUBE_COOKIES.strip().split('\n')) > 4:
+                user_cookies = GLOBAL_YOUTUBE_COOKIES
+                try:
+                    with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False, encoding='utf-8') as tf:
+                        tf.write(user_cookies)
+                        temp_cookie_path = tf.name
+                    youtube_opts['cookiefile'] = temp_cookie_path
+                    if status_callback:
+                        status_callback("Using system-wide YouTube authentication...")
+                    logger.info("Using GLOBAL_YOUTUBE_COOKIES from code.")
+                except Exception as e:
+                    logger.error(f"Failed to create temporary global cookies file: {e}")
 
-            # 2. Check if we're in a production environment (like Render)
+            # 4. Check if we're in a production environment (like Render) for system fallback
             is_production = os.environ.get('RENDER') == 'true' or '/opt/render' in os.path.expanduser('~')
             
-            if is_production:
-                # In production, don't try to use browser cookies which will fail
-                logger.info("Running in production environment, using production-specific settings")
-                if status_callback:
-                    status_callback("Using production download settings...")
-                
-                # Add production-specific settings
-                youtube_opts.update({
-                    'cookiesfrombrowser': None,  # Don't try browser cookies in production
-                    'force_generic_extractor': False,
-                    'extract_flat': True,
-                    'mark_watched': False,
-                    'ignoreerrors': True,
-                    'skip_unavailable_fragments': True,
-                    'youtube_include_dash_manifest': False,  # Skip DASH manifests
-                    'youtube_include_hls_manifest': False,   # Skip HLS manifests
-                })
-                
-                # Check for cookies.txt in production locations if user-cookies not provided
-                if not user_cookies:
+            if 'cookiefile' not in youtube_opts:
+                if is_production:
+                    # Production: check other common locations
                     production_cookie_locations = [
                         '/app/cookies.txt',
-                        '/app/youtube_cookies.txt',
                         '/opt/render/project/src/cookies.txt',
-                        '/opt/render/project/src/youtube_cookies.txt',
                         '/tmp/cookies.txt',
-                        os.path.join(root_dir, 'cookies.txt'),
-                        os.path.join(root_dir, 'youtube_cookies.txt'),
                     ]
-                    
                     for cookie_file in production_cookie_locations:
                         if os.path.exists(cookie_file) and os.path.getsize(cookie_file) > 0:
                             youtube_opts['cookiefile'] = cookie_file
-                            if status_callback:
-                                status_callback(f"Using system cookies file: {os.path.basename(cookie_file)}")
-                            logger.info(f"Using system cookies file for YouTube: {cookie_file}")
                             break
-            else:
-                # In development, try local cookie files first if user-cookies not provided
-                if not user_cookies:
-                    cookie_locations = [
-                        os.path.join(root_dir, 'cookies.txt'),
-                        os.path.join(root_dir, 'youtube_cookies.txt'),
-                        os.path.join(os.path.expanduser('~'), 'cookies.txt'),
-                        os.path.join(os.path.expanduser('~'), 'youtube_cookies.txt'),
-                    ]
-                    
-                    for cookie_file in cookie_locations:
-                        if os.path.exists(cookie_file) and os.path.getsize(cookie_file) > 0:
-                            youtube_opts['cookiefile'] = cookie_file
-                            if status_callback:
-                                status_callback(f"Using local cookies file: {os.path.basename(cookie_file)}")
-                            logger.info(f"Using local cookies file for YouTube: {cookie_file}")
+                else:
+                    # Local: try browser cookies as last resort
+                    browsers = ['chrome', 'firefox', 'edge', 'safari', 'opera']
+                    for browser in browsers:
+                        try:
+                            youtube_opts['cookiesfrombrowser'] = (browser, None)
                             break
-                    
-                    # Try browser cookies if no cookie file found
-                    if 'cookiefile' not in youtube_opts:
-                        # Try common browsers in order of popularity
-                        browsers = ['chrome', 'firefox', 'edge', 'safari', 'opera']
-                        for browser in browsers:
-                            try:
-                                youtube_opts['cookiesfrombrowser'] = (browser, None)  # None = default profile
-                                if status_callback:
-                                    status_callback(f"Trying cookies from {browser.title()} browser...")
-                                logger.info(f"Attempting to extract cookies from {browser}")
-                                
-                                # We'll test this browser in the actual download
-                                break
-                            except Exception as e:
-                                logger.warning(f"Failed to extract cookies from {browser}: {str(e)}")
-                                continue
+                        except Exception:
+                            continue
             
             # Merge with any extra options provided
             if extra_opts:
