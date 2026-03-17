@@ -76,9 +76,6 @@ class SettingsForm(FlaskForm):
         ('normal', 'Normal'),
         ('high', 'High')
     ])
-    cookies_file = FileField('YouTube Cookies (cookies.txt)', validators=[
-        FileAllowed(['txt'], 'Only .txt files are allowed!')
-    ])
     submit = SubmitField('Save Settings')
 
 class PasswordResetRequestForm(FlaskForm):
